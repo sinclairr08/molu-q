@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <div className="w-full fixed bottom-0 p-3 flex flex-col text-center text-xs bg-cyan-400 text-white">
+    <div className="w-full fixed bottom-0 p-3 flex flex-col text-center text-xs bg-cyan-400 text-white z- 10">
       <span>© 2024. molu-q</span>
       <span>
         이 페이지는 넥슨 게임즈의 공식 서비스가 아니며, 모든 리소스의 저작권은
