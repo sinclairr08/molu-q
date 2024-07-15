@@ -1,6 +1,6 @@
 "use client";
 
-import Quiz, { IQuiz } from "@/components/quiz";
+import Quiz, { IQuiz } from "@/components/quiz/Quiz";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,7 @@ const QuizPage: React.FC = () => {
     fetchData();
   }, []);
   return (
-    <div className="pb-12 mt-4">
+    <div className="mt-16">
       {quizs.map((quiz) => (
         <Quiz key={quiz.problemNo} {...quiz} />
       ))}
