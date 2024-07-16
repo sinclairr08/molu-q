@@ -1,3 +1,5 @@
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import "./globals.css";
 
 export const metadata = {
@@ -12,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <Header />
+        <main className="mt-12 mb-20">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
