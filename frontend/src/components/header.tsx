@@ -9,6 +9,9 @@ const Header: React.FC = () => {
       <Link href="/quiz">
         <span className="mx-4">퀴즈</span>
       </Link>
+      <Link href="/http">
+        <span className="mx-4">HTTP</span>
+      </Link>
     </div>
   );
 };
