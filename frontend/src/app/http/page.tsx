@@ -1,24 +1,36 @@
 "use client";
 
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const Image = ({ code }: { code: number }) => {
+interface IHttp {
+  code: number;
+  message: string;
+  ext: string;
+}
+
+const HttpImage = ({ code, ext }: IHttp) => {
   return (
-    <div className="flex justify-center">
-      <img src={`/http/${code}.png`} />
+    <div className="flex justify-center ">
+      <img src={`/http/${code}.${ext}`} className="w-48 h-48" />
     </div>
   );
 };
 
-const Card = ({ code }: { code: number }) => {
+const HttpCard = (cardProps: IHttp) => {
   return (
     <div className="flex flex-col justify-center items-center">
-      <Link href={`/http/${code}`}>
-        <div className="bg-red-500 p-4">
-          <div className="text-center text-white font-bold">{code}</div>
-          <Image code={code} />
+      <Link href={`/http/${cardProps.code}`}>
+        <div className="bg-red-400 p-3 w-64  h-64">
+          <div className="text-center text-white font-bold">
+            {cardProps.code}
+          </div>
+          <div className="text-center text-white font-bold">
+            {cardProps.message}
+          </div>
+          <HttpImage {...cardProps} />
         </div>
       </Link>
     </div>
@@ -26,9 +38,24 @@ const Card = ({ code }: { code: number }) => {
 };
 
 const HttpPage: React.FC = () => {
+  const [httpItems, setHttpItems] = useState<IHttp[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("/http/http.json");
+        console.log(data);
+        setHttpItems(data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
-    <div className="mt-16">
-      <Card code={410} />
+    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {httpItems.map((httpItem) => (
+        <HttpCard key={httpItem.code} {...httpItem} />
+      ))}
     </div>
   );
 };
