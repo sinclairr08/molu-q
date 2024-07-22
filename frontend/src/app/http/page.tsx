@@ -5,13 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-interface IHttp {
+export interface IHttp {
   code: number;
   message: string;
   ext: string;
 }
 
-const HttpImage = ({ code, ext }: IHttp) => {
+export const HttpImage = ({ code, ext }: IHttp) => {
   return (
     <div className="flex justify-center ">
       <img src={`/http/${code}.${ext}`} className="w-48 h-48" />
@@ -22,7 +22,9 @@ const HttpImage = ({ code, ext }: IHttp) => {
 const HttpCard = (cardProps: IHttp) => {
   return (
     <div className="flex flex-col justify-center items-center">
-      <Link href={`/http/${cardProps.code}`}>
+      <Link
+        href={{ pathname: `/http/${cardProps.code}`, query: { ...cardProps } }}
+      >
         <div className="bg-red-400 p-3 w-64  h-64">
           <div className="text-center text-white font-bold">
             {cardProps.code}
