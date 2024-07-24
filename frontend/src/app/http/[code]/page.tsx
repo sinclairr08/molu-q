@@ -1,22 +1,49 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { HttpImage } from "../page";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+interface IHttpCode {
+  message: string;
+  ext: string;
+  description: string;
+}
 
 const CodePage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const code: number = parseInt(searchParams.get("code"));
-  const message = searchParams.get("message");
-  const ext = searchParams.get("ext");
-  const description = "description";
+  const [httpCodeInfo, setHttpCodeInfo] = useState<IHttpCode>();
+  const pathname = usePathname();
+
+  const lastPath = pathname.split("/").filter(Boolean).pop() || "";
+  const code = parseInt(lastPath);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get(`/http/${code}.json`);
+        console.log(data);
+        setHttpCodeInfo(data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-red-400 py-24 space-y-8">
-      <div className="text-center text-white font-bold">{code}</div>
-      <div className="text-center text-white font-bold">{message}</div>
-      <HttpImage code={code} ext={ext} />
-      <div className="text-center text-white font-bold">{description}</div>
-    </div>
+    httpCodeInfo && (
+      <div className="flex flex-col justify-center items-center bg-red-400 py-24 space-y-8">
+        <div className="text-center text-white font-bold">{code}</div>
+        <div className="text-center text-white font-bold">
+          {httpCodeInfo.message}
+        </div>
+        <HttpImage code={code} ext={httpCodeInfo.ext} message="" />
+        <div className="text-center text-white font-bold  whitespace-pre-line">
+          {httpCodeInfo.description}
+        </div>
+      </div>
+    )
   );
 };
 

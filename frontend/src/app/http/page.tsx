@@ -22,9 +22,7 @@ export const HttpImage = ({ code, ext }: IHttp) => {
 const HttpCard = (cardProps: IHttp) => {
   return (
     <div className="flex flex-col justify-center items-center">
-      <Link
-        href={{ pathname: `/http/${cardProps.code}`, query: { ...cardProps } }}
-      >
+      <Link href={`/http/${cardProps.code}`}>
         <div className="bg-red-400 p-3 w-64  h-64">
           <div className="text-center text-white font-bold">
             {cardProps.code}
