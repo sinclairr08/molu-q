@@ -2,16 +2,20 @@
 
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export interface IHttp {
+interface IHttp {
   code: number;
   message: string;
   ext: string;
 }
 
-export const HttpImage = ({ code, ext }: IHttp) => {
+interface HttpImageProps {
+  code: number;
+  ext: string;
+}
+
+export const HttpImage = ({ code, ext }: HttpImageProps) => {
   return (
     <div className="flex justify-center ">
       <img src={`/http/${code}.${ext}`} className="w-48 h-48" />

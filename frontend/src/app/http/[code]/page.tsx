@@ -39,7 +39,7 @@ const CodePage: React.FC = () => {
         <div className="text-center text-white font-bold">
           {httpCodeInfo.message}
         </div>
-        <HttpImage code={code} ext={httpCodeInfo.ext} message="" />
+        <HttpImage code={code} ext={httpCodeInfo.ext} />
         <div className="text-center text-white font-bold  whitespace-pre-line">
           {httpCodeInfo.description}
         </div>
