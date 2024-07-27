@@ -46,8 +46,7 @@ const HttpPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get("/http/http.json");
-        console.log(data);
+        const { data } = await axios.get("/api/http");
         setHttpItems(data);
       } catch (error) {
         console.error("Failed to fetch data:", error);
