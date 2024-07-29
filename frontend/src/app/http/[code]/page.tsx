@@ -22,8 +22,7 @@ const CodePage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/http/${code}.json`);
-        console.log(data);
+        const { data } = await axios.get(`/api/http/${code}`);
         setHttpCodeInfo(data);
       } catch (error) {
         console.error("Failed to fetch data:", error);

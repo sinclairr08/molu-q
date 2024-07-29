@@ -10,7 +10,7 @@ const QuizPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get("/quiz/quiz.json");
+        const { data } = await axios.get("/api/quiz");
         setQuizs(data);
       } catch (error) {
         console.error("Failed to fetch data:", error);
