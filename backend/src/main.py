@@ -1,12 +1,13 @@
-import os
 import json
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
-
-from pydantic import BaseModel
+import os
 from typing import Optional
 
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
 app = FastAPI()
+
 
 class QuizResponse(BaseModel):
     problemNo: int
@@ -16,15 +17,18 @@ class QuizResponse(BaseModel):
     answerList: Optional[list[str]]
     answer: str
 
+
 class HttpResponse(BaseModel):
     code: int
     message: str
     ext: str
 
+
 class HttpDetailResponse(BaseModel):
     message: str
     ext: str
     description: str
+
 
 async def read_file(fn):
     try:
@@ -34,6 +38,7 @@ async def read_file(fn):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/quiz", response_model=list[QuizResponse])
 async def read_quiz():

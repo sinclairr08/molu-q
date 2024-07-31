@@ -1,10 +1,10 @@
 ## Related issue
 
-close/related 
+close/related
 
 ## Key changes
 
-- 
+-
 
 ## version info
 
