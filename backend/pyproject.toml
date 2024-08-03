@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "backend"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["sinclairr08 <ljhjoon00@gmail.com>"]
 readme = "README.md"
@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.111.1"
 uvicorn = "^0.30.3"
+pre-commit = "^3.8.0"
 
 
 [build-system]
