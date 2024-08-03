@@ -8,4 +8,4 @@ close/related
 
 ## version info
 
-x.x.x -> x.x.x
+x.x.x
