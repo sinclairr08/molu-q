@@ -18,6 +18,11 @@ class QuizResponse(BaseModel):
     answer: str
 
 
+class QuizIdResponse(BaseModel):
+    quizId: int
+    quizDescription: str
+
+
 class HttpResponse(BaseModel):
     code: int
     message: str
@@ -43,6 +48,12 @@ async def read_file(fn):
 @app.get("/quiz", response_model=list[QuizResponse])
 async def read_quiz():
     data = await read_file(f"{os.path.dirname(__file__)}/local/quiz.json")
+    return JSONResponse(content=data)
+
+
+@app.get("/v0/quiz", response_model=list[QuizIdResponse])
+async def read_quiz_ids():
+    data = await read_file(f"{os.path.dirname(__file__)}/local/quiz_ids.json")
     return JSONResponse(content=data)
 
 
