@@ -1,7 +1,8 @@
 import QuizQuestion from "./QuizQuestion";
 import QuizAnswer from "./QuizAnswer";
-import { useState } from "react";
 import { useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
+
+import { useRouter } from "next/navigation";
 
 export interface IQuiz {
   problemNo: number;
@@ -9,7 +10,6 @@ export interface IQuiz {
   question: string;
   musicPath?: string;
   imagePath?: string;
-  answer?: string;
   answerList?: string[];
 }
 
@@ -26,15 +26,14 @@ export interface IQuizForm extends IQuiz {
 
 export default function Quiz(quiz: IQuiz) {
   const { register, handleSubmit, watch } = useForm<IForm>();
-  const [isAnswer, setIsAnswer] = useState<boolean | undefined>();
+  const router = useRouter();
 
   const isValid = (data: IForm) => {
-    console.log(data);
-    console.log(quiz);
     if (!data.answer) {
       return;
     }
-    setIsAnswer(data.answer.toLowerCase() === quiz.answer?.toLowerCase());
+    // TODO: use post api to submit this answer
+    // TODO: use router to move next problem Id
   };
 
   return (
@@ -46,19 +45,6 @@ export default function Quiz(quiz: IQuiz) {
         handleSubmit={handleSubmit(isValid)}
         watch={watch}
       />
-      <QuizResult isAnswer={isAnswer} />
     </div>
   );
 }
-
-const QuizResult = ({ isAnswer }: { isAnswer: boolean | undefined }) => {
-  if (isAnswer === undefined) {
-    return null;
-  }
-
-  return (
-    <div className="flex justify-center">
-      {isAnswer === true ? "정답입니다!" : "틀렸습니다!"}
-    </div>
-  );
-};
