@@ -3,32 +3,33 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from src.db import read_quiz, read_quiz_by_id
+from src.db import read_quiz_by_set_id, read_quiz_sets
 
-router = APIRouter()
+router = APIRouter(prefix="/v0/quiz")
 
 
 class QuizResponse(BaseModel):
-    problemNo: int
+    problemUid: int
+    quizSetId: int
+    problemId: int
     problemType: str
     question: str
     musicPath: Optional[str]
-    answerList: Optional[list[str]]
-    answer: str
+    selectList: Optional[list[str]]
 
 
-class QuizIdResponse(BaseModel):
-    quizId: int
-    quizDescription: str
+class QuizSetResponse(BaseModel):
+    quizSetId: int
+    quizSetDescription: str
 
 
-@router.get("/v0/quiz", response_model=list[QuizIdResponse])
-async def get_quiz_ids():
-    data = read_quiz()
+@router.get("/sets", response_model=list[QuizSetResponse])
+async def get_quiz_sets():
+    data = read_quiz_sets()
     return JSONResponse(content=data)
 
 
-@router.get("/v0/quiz/{quiz_id}", response_model=list[QuizIdResponse])
-def get_quiz_by_id(quiz_id: int):
-    data = read_quiz_by_id(quiz_id)
+@router.get("/sets/{set_id}", response_model=list[QuizResponse])
+def get_quiz_by_set_id(set_id: int):
+    data = read_quiz_by_set_id(set_id)
     return JSONResponse(content=data)

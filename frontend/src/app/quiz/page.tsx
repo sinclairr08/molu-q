@@ -4,29 +4,29 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export interface IQuizId {
-  quizId: number;
-  quizDescription: string;
+export interface IQuizSet {
+  quizSetId: number;
+  quizSetDescription: string;
 }
 
-const QuizIdBlock = ({ quizId, quizDescription }: IQuizId) => {
+const QuizIdBlock = ({ quizSetId, quizSetDescription }: IQuizSet) => {
   return (
-    <Link href={`/quiz/${quizId}`}>
+    <Link href={`/quiz/${quizSetId}`}>
       <div className="flex flex-col justify-center items-center border-cyan-400 border-2 rounded-full p-3 m-2 whitespace-nowrap overflow-hidden text-sm">
-        {quizDescription}
+        {quizSetDescription}
       </div>
     </Link>
   );
 };
 
 const QuizIdPage: React.FC = () => {
-  const [quizIds, setQuizIds] = useState<IQuizId[]>([]);
+  const [quizSets, setQuizSets] = useState<IQuizSet[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get("/api/v0/quiz");
-        setQuizIds(data);
+        const { data } = await axios.get("/api/v0/quiz/sets");
+        setQuizSets(data);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -35,8 +35,8 @@ const QuizIdPage: React.FC = () => {
   }, []);
   return (
     <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {quizIds.map((quizId) => (
-        <QuizIdBlock key={quizId.quizId} {...quizId} />
+      {quizSets.map((quizSet) => (
+        <QuizIdBlock key={quizSet.quizSetId} {...quizSet} />
       ))}
     </div>
   );

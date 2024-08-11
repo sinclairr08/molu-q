@@ -5,7 +5,7 @@ export default function QuizQuestion(quiz: IQuiz) {
   return (
     <>
       <div className="flex justify-center">
-        {quiz.problemNo}: {quiz.question}
+        {quiz.problemId}: {quiz.question}
       </div>
 
       {quiz.musicPath && <Audio path={quiz.musicPath} />}

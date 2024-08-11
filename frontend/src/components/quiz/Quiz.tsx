@@ -2,15 +2,16 @@ import QuizQuestion from "./QuizQuestion";
 import QuizAnswer from "./QuizAnswer";
 import { useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export interface IQuiz {
-  problemNo: number;
+  problemId: number;
+  problemUid: number;
   problemType: string;
   question: string;
   musicPath?: string;
   imagePath?: string;
-  answerList?: string[];
+  selectList?: string[];
 }
 
 interface IForm {
@@ -26,7 +27,7 @@ export interface IQuizForm extends IQuiz {
 
 export default function Quiz(quiz: IQuiz) {
   const { register, handleSubmit, watch } = useForm<IForm>();
-  const router = useRouter();
+  // const router = useRouter();
 
   const isValid = (data: IForm) => {
     if (!data.answer) {

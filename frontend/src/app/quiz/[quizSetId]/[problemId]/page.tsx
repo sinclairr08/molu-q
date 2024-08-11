@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const initialQuizState: IQuiz = {
-  problemNo: 0,
+  problemId: 0,
+  problemUid: 0,
   problemType: "short",
   question: "",
 };
@@ -18,12 +19,12 @@ const QuizProblemPage: React.FC = () => {
   const segments = pathname.split("/");
 
   const problemId = parseInt(segments[segments.length - 1]);
-  const quizId = parseInt(segments[segments.length - 2]);
+  const quizSetId = parseInt(segments[segments.length - 2]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/v0/quiz/${quizId}`);
+        const { data } = await axios.get(`/api/v0/quiz/sets/${quizSetId}`);
         setQuiz(data[problemId]);
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -33,7 +34,7 @@ const QuizProblemPage: React.FC = () => {
   }, []);
   return (
     <div className="mt-16">
-      <Quiz key={quiz.problemNo} {...quiz} />
+      <Quiz key={quiz.problemId} {...quiz} />
     </div>
   );
 };
