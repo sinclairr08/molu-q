@@ -16,3 +16,15 @@ def read_quiz_by_set_id(set_id: int) -> list:
         return list(collection.find({}, {"_id": 0, "answer": 0}))
 
     return list(collection.find({"quizSetId": set_id}, {"_id": 0, "answer": 0}))
+
+
+def add_quiz(quiz):
+    counters = db["counters"]
+    cnt = counters.find_one({"_id": "quiz"}, {"_id": 0})["cnt"]
+
+    collection = db["quizs"]
+
+    updated_quiz = dict(quiz.copy(update={"problemUid": cnt}))
+    collection.insert_one(updated_quiz)
+
+    counters.update_one({"_id": "quiz"}, {"$set": {"cnt": cnt + 1}})

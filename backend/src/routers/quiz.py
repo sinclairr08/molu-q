@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from src.db import read_quiz_by_set_id, read_quiz_sets
+from src.db import add_quiz, read_quiz_by_set_id, read_quiz_sets
 
 router = APIRouter(prefix="/v0/quiz")
 
@@ -16,6 +16,14 @@ class QuizResponse(BaseModel):
     question: str
     musicPath: Optional[str]
     selectList: Optional[list[str]]
+
+
+class QuizRequest(BaseModel):
+    quizSetId: int
+    problemId: int
+    problemType: str
+    question: str
+    answer: str
 
 
 class QuizSetResponse(BaseModel):
@@ -33,3 +41,9 @@ async def get_quiz_sets():
 def get_quiz_by_set_id(set_id: int):
     data = read_quiz_by_set_id(set_id)
     return JSONResponse(content=data)
+
+
+@router.post("")
+def create_quiz(quiz: QuizRequest):
+    add_quiz(quiz)
+    return JSONResponse(content=f"quiz {quiz.problemId} added successfully")

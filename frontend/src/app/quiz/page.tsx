@@ -38,6 +38,11 @@ const QuizIdPage: React.FC = () => {
       {quizSets.map((quizSet) => (
         <QuizIdBlock key={quizSet.quizSetId} {...quizSet} />
       ))}
+      <Link href={"/quiz/new"}>
+        <div className="flex flex-col justify-center items-center border-cyan-400 border-2 rounded-full p-3 m-2 whitespace-nowrap overflow-hidden text-sm bg-cyan-100">
+          퀴즈 추가하기
+        </div>
+      </Link>
     </div>
   );
 };

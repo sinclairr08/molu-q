@@ -2,7 +2,11 @@ import { UseFormRegisterReturn } from "react-hook-form";
 import { IQuizForm } from "./Quiz";
 import { SubmitButton } from "../general";
 
-const ShortInput = ({ register }: { register: UseFormRegisterReturn<any> }) => {
+export const ShortInput = ({
+  register,
+}: {
+  register: UseFormRegisterReturn<any>;
+}) => {
   return (
     <div className="flex justify-center">
       <input
