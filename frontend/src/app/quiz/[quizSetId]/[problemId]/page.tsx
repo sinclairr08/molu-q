@@ -24,8 +24,14 @@ const QuizProblemPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/v0/quiz/sets/${quizSetId}`);
-        setQuiz(data[problemId]);
+        const { data } = await axios.get<IQuiz[]>(
+          `/api/v0/quiz/sets/${quizSetId}`,
+        );
+        const targetQuiz = data.find((block) => block.problemId === problemId);
+        if (!targetQuiz) {
+          throw new Error("no such problem Id");
+        }
+        setQuiz(targetQuiz);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
