@@ -2,6 +2,7 @@ import QuizQuestion from "./QuizQuestion";
 import QuizAnswer from "./QuizAnswer";
 import { useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
+import { useQuiz } from "@/contexts/QuizContext";
 
 export interface IQuiz {
   problemId: number;
@@ -33,11 +34,13 @@ export default function Quiz(quiz: IQuiz) {
   const problemId = parseInt(segments[segments.length - 1]);
   const quizSetId = parseInt(segments[segments.length - 2]);
 
+  const { submitAnswer } = useQuiz();
+
   const isValid = (data: IForm) => {
     if (!data.answer) {
       return;
     }
-    // TODO: use post api to submit this answer
+    submitAnswer({ problemId, answer: data.answer });
     router.push(`/quiz/${quizSetId}/${problemId + 1}`);
   };
 
