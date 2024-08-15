@@ -10,7 +10,7 @@ const QuizPage: React.FC = () => {
 
   return (
     <div className="mt-16 flex justify-center items-center text-cyan-400 font-bold">
-      <Link href={`/quiz/${quizSetId}/0`}>START!</Link>
+      <Link href={`/quiz/${quizSetId}/1`}>START!</Link>
     </div>
   );
 };

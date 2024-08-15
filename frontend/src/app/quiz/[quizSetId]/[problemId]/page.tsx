@@ -2,8 +2,9 @@
 
 import Quiz, { IQuiz } from "@/components/quiz/Quiz";
 import axios from "axios";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 const initialQuizState: IQuiz = {
   problemId: 0,
@@ -11,6 +12,9 @@ const initialQuizState: IQuiz = {
   problemType: "short",
   question: "",
 };
+
+const fetcher = (url: string) =>
+  axios.get<IQuiz[]>(url).then((res) => res.data);
 
 const QuizProblemPage: React.FC = () => {
   const [quiz, setQuiz] = useState<IQuiz>(initialQuizState);
@@ -21,23 +25,20 @@ const QuizProblemPage: React.FC = () => {
   const problemId = parseInt(segments[segments.length - 1]);
   const quizSetId = parseInt(segments[segments.length - 2]);
 
+  const { data } = useSWR<IQuiz[]>(`/api/v0/quiz/sets/${quizSetId}`, fetcher);
+  const router = useRouter();
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get<IQuiz[]>(
-          `/api/v0/quiz/sets/${quizSetId}`,
-        );
-        const targetQuiz = data.find((block) => block.problemId === problemId);
-        if (!targetQuiz) {
-          throw new Error("no such problem Id");
-        }
+    if (data) {
+      const targetQuiz = data.find((block) => block.problemId === problemId);
+      if (!targetQuiz) {
+        router.push(`/quiz/${quizSetId}/result`);
+      } else {
         setQuiz(targetQuiz);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
       }
-    };
-    fetchData();
-  }, []);
+    }
+  }, [data, problemId]);
+
   return (
     <div className="mt-16">
       <Quiz key={quiz.problemId} {...quiz} />
