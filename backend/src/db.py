@@ -28,3 +28,12 @@ def add_quiz(quiz):
     collection.insert_one(updated_quiz)
 
     counters.update_one({"_id": "quiz"}, {"$set": {"cnt": cnt + 1}})
+
+
+def read_answer_by_set_problem_id(set_id, problem_id):
+    collection = db["quizs"]
+    answer = collection.find_one(
+        {"quizSetId": set_id, "problemId": problem_id}, {"_id": 0}
+    )["answer"]
+
+    return {"answer": answer}
