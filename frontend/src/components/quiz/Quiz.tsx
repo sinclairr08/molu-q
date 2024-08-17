@@ -41,7 +41,7 @@ export default function Quiz(quiz: IQuiz) {
       return;
     }
     submitAnswer({ problemId, answer: data.answer });
-    router.push(`/quiz/${quizSetId}/${problemId + 1}`);
+    router.push(`/quiz/${quizSetId}/${problemId}/result`);
   };
 
   return (

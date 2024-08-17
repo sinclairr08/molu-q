@@ -6,6 +6,7 @@ interface QuizContextType {
   answers: { problemId: number; answer: string }[];
   submitAnswer: (data: { problemId: number; answer: string }) => void;
   resetAnswers: () => void;
+  getAnswer: (problemId: number) => { problemId: number; answer: string };
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
@@ -23,8 +24,19 @@ export const QuizProvider = ({ children }: any) => {
     setAnswers([]);
   };
 
+  const getAnswer = (problemId: number) => {
+    return (
+      answers.find((answer) => answer.problemId === problemId) || {
+        problemId: 0,
+        answer: "",
+      }
+    );
+  };
+
   return (
-    <QuizContext.Provider value={{ answers, submitAnswer, resetAnswers }}>
+    <QuizContext.Provider
+      value={{ answers, submitAnswer, resetAnswers, getAnswer }}
+    >
       {children}
     </QuizContext.Provider>
   );
