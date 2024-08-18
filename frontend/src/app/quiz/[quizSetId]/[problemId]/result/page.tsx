@@ -16,7 +16,7 @@ const fetcher = (url: string) =>
 
 const QuizProblemPage: React.FC = () => {
   const [message, setMessage] = useState<string>("");
-  const { getAnswer } = useQuiz();
+  const { getAnswer, submitResult } = useQuiz();
 
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -30,11 +30,13 @@ const QuizProblemPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (data && data.answer) {
+    if (data && data.answer && problemId) {
       if (data.answer == getAnswer(problemId).answer) {
         setMessage(`정답! ${data.answer}`);
+        submitResult({ quizSetId, problemId, status: true });
       } else {
         setMessage(`오답! ${data.answer}`);
+        submitResult({ quizSetId, problemId, status: false });
       }
     }
   }, [data, problemId]);
