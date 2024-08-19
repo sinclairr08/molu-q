@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/components/general";
+import { SelectBox, SubmitButton } from "@/components/general";
 import { ShortInput } from "@/components/quiz/ShortAnswer";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -52,7 +52,10 @@ const QuizAddPage: React.FC = () => {
         </label>
         <label className="flex items-center justify-center">
           <span className="px-2">문제 타입</span>
-          <ShortInput register={register("problemType")} />
+          <SelectBox
+            register={register("problemType")}
+            itemList={["short", "select", "musicSelect"]}
+          />
         </label>
         <label className="flex items-center justify-center">
           <span className="px-2">문제</span>
