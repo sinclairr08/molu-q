@@ -42,7 +42,7 @@ const QuizProblemPage: React.FC = () => {
   }, [data, problemId]);
 
   return (
-    <div className="mt-16 flex flex-col justify-center items-center text-cyan-400 font-bold">
+    <div className="flex flex-col justify-center items-center text-cyan-400 font-bold">
       <span>{message}</span>
       <Link href={`/quiz/${quizSetId}/${problemId + 1}`}>NEXT</Link>
     </div>

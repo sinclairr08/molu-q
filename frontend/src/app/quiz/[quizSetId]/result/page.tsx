@@ -7,7 +7,7 @@ const QuizEndPage: React.FC = () => {
   const { getTotalResult } = useQuiz();
   const { correct, total } = getTotalResult();
   return (
-    <div className="mt-16 flex justify-center items-center text-cyan-400 font-bold">
+    <div className="flex justify-center items-center text-cyan-400 font-bold">
       <div className="flex flex-col items-center">
         <span>
           Score: {correct} / {total}

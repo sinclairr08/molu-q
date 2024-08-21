@@ -12,7 +12,7 @@ const QuizPage: React.FC = () => {
   const { reset } = useQuiz();
 
   return (
-    <div className="mt-16 flex justify-center items-center text-cyan-400 font-bold">
+    <div className="flex justify-center items-center text-cyan-400 font-bold">
       <Link href={`/quiz/${quizSetId}/1`} onClick={reset}>
         START!
       </Link>

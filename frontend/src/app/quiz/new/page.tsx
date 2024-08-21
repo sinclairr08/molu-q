@@ -4,7 +4,7 @@ import { SelectBox, SubmitButton } from "@/components/general";
 import { ShortInput } from "@/components/quiz/ShortAnswer";
 import axios from "axios";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegisterReturn } from "react-hook-form";
 
 export interface IQuizInputForm {
   quizSetId?: number;
@@ -14,6 +14,35 @@ export interface IQuizInputForm {
   selectList?: string[];
   answer: string;
 }
+
+interface IShortInputRow {
+  register: UseFormRegisterReturn<any>;
+  label: string;
+}
+
+interface ISelectBoxRow {
+  register: UseFormRegisterReturn<any>;
+  label: string;
+  itemList: string[];
+}
+
+const ShortInputRow = ({ register, label }: IShortInputRow) => {
+  return (
+    <label className="flex items-center">
+      <span className="px-2 w-24">{label}</span>
+      <ShortInput register={register} />
+    </label>
+  );
+};
+
+const SelectBoxRow = ({ register, label, itemList }: ISelectBoxRow) => {
+  return (
+    <label className="flex items-center">
+      <span className="px-2 w-24">{label}</span>
+      <SelectBox register={register} itemList={itemList} />
+    </label>
+  );
+};
 
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch } = useForm<IQuizInputForm>();
@@ -52,52 +81,37 @@ const QuizAddPage: React.FC = () => {
   };
   return (
     <form onSubmit={handleSubmit(isValid)}>
-      <div className="flex flex-col space-y-3 pb-8">
-        <label className="flex items-center justify-center">
-          <span className="px-2">세트 번호</span>
-          <ShortInput register={register("quizSetId")} />
-        </label>
-        <label className="flex items-center justify-center">
-          <span className="px-2">문제 번호</span>
-          <ShortInput register={register("problemId")} />
-        </label>
-        <label className="flex items-center justify-center">
-          <span className="px-2">문제 타입</span>
-          <SelectBox
-            register={register("problemType")}
-            itemList={["short", "select", "musicSelect"]}
-          />
-        </label>
-        <label className="flex items-center justify-center">
-          <span className="px-2">문제</span>
-          <ShortInput register={register("question")} />
-        </label>
+      <div className="flex flex-col items-center space-y-3 pb-8 mx-12">
+        <ShortInputRow register={register("quizSetId")} label="세트 번호" />
+        <ShortInputRow register={register("problemId")} label="문제 번호" />
+        <SelectBoxRow
+          register={register("problemType")}
+          label="문제 타입"
+          itemList={["short", "select", "musicSelect"]}
+        />
+
+        <ShortInputRow register={register("question")} label="문제" />
+
         {currentProblemType &&
           currentProblemType.toLowerCase().includes("select") && (
             <>
+              <button
+                onClick={addSelectItem}
+                className="cursor-pointer rounded-md bg-cyan-200 p-2"
+              >
+                객관식 문제 추가
+              </button>
               {selectItems &&
                 selectItems.map((selectItem, index) => (
-                  <label
+                  <ShortInputRow
+                    register={register(`selectList.${index}`)}
+                    label={selectItem}
                     key={selectItem}
-                    className="flex items-center justify-center"
-                  >
-                    <span className="px-2">{selectItem}</span>
-                    <ShortInput register={register(`selectList.${index}`)} />
-                  </label>
+                  />
                 ))}
-
-              <label
-                className="flex items-center justify-center cursor-pointer"
-                onClick={addSelectItem}
-              >
-                +
-              </label>
             </>
           )}
-        <label className="flex items-center justify-center">
-          <span className="px-2">답</span>
-          <ShortInput register={register("answer")} />
-        </label>
+        <ShortInputRow register={register("answer")} label="답" />
         <SubmitButton />
       </div>
     </form>

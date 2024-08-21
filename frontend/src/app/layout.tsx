@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         <QuizProvider>
           <Header />
-          <main className="mt-12 mb-20">{children}</main>
+          <main className="mt-16 mb-20">{children}</main>
           <Footer />
         </QuizProvider>
       </body>

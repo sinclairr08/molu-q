@@ -40,7 +40,7 @@ const QuizProblemPage: React.FC = () => {
   }, [data, problemId]);
 
   return (
-    <div className="mt-16">
+    <div>
       <Quiz key={quiz.problemId} {...quiz} />
     </div>
   );
