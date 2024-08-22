@@ -54,6 +54,10 @@ const QuizAddPage: React.FC = () => {
     );
   };
 
+  const deleteSelectItem = () => {
+    setSelectItems((prev) => (prev ? prev.slice(0, -1) : prev));
+  };
+
   const currentProblemType = watch("problemType");
 
   const isValid = (data: IQuizInputForm) => {
@@ -95,12 +99,20 @@ const QuizAddPage: React.FC = () => {
         {currentProblemType &&
           currentProblemType.toLowerCase().includes("select") && (
             <>
-              <button
-                onClick={addSelectItem}
-                className="cursor-pointer rounded-md bg-cyan-200 p-2"
-              >
-                객관식 문제 추가
-              </button>
+              <div className="flex space-x-2 text-sm">
+                <button
+                  onClick={addSelectItem}
+                  className="cursor-pointer rounded-md bg-cyan-200 p-2"
+                >
+                  객관식 문제 추가
+                </button>
+                <button
+                  onClick={deleteSelectItem}
+                  className="cursor-pointer rounded-md bg-cyan-200 p-2"
+                >
+                  객관식 문제 제거
+                </button>
+              </div>
               {selectItems &&
                 selectItems.map((selectItem, index) => (
                   <ShortInputRow
