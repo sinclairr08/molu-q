@@ -33,6 +33,7 @@ class QuizRequest(BaseModel):
     problemType: str
     question: str
     answer: str
+    selectList: Optional[list[str]]
 
 
 class QuizSetResponse(BaseModel):

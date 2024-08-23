@@ -45,7 +45,7 @@ const SelectBoxRow = ({ register, label, itemList }: ISelectBoxRow) => {
 };
 
 const QuizAddPage: React.FC = () => {
-  const { register, handleSubmit, watch } = useForm<IQuizInputForm>();
+  const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
   const [selectItems, setSelectItems] = useState<string[]>();
   const addSelectItem = () => {
     const idx = selectItems ? selectItems.length : 0;
@@ -61,27 +61,29 @@ const QuizAddPage: React.FC = () => {
   const currentProblemType = watch("problemType");
 
   const isValid = (data: IQuizInputForm) => {
-    if (
-      !data.problemId ||
-      data.problemType != "short" ||
-      !data.question ||
-      !data.answer
-    ) {
+    if (!data.problemId || !data.question || !data.answer) {
       return;
     }
 
     const updatedData = {
       ...data,
       quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
+      selectList: data.selectList || [],
     };
 
     console.log(updatedData);
 
-    axios.post("/api/v0/quiz", updatedData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      axios.post("/api/v0/quiz", updatedData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      reset();
+    } catch (error) {
+      console.error(`${error} occurred`);
+    }
   };
   return (
     <form onSubmit={handleSubmit(isValid)}>
