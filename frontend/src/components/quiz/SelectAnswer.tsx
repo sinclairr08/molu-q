@@ -3,8 +3,8 @@ import { IQuizForm } from "@/components/quiz/Quiz";
 import { SubmitButton } from "../general";
 
 export default function SelectAnswer({
-  problemNo,
-  answerList,
+  problemId,
+  selectList,
   register,
   handleSubmit,
   watch,
@@ -14,13 +14,13 @@ export default function SelectAnswer({
     <div className="flex justify-center">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col space-y-3">
-          {answerList &&
-            answerList.map((answerItem, i) => (
+          {selectList &&
+            selectList.map((selectItem, i) => (
               <SelectItem
-                key={`${problemNo}_${i}`}
+                key={`${problemId}_${i}`}
                 register={register}
                 index={i}
-                answerItem={answerItem}
+                selectItem={selectItem}
                 isCurrentClicked={watch("answer") == String(i + 1)}
                 isMusic={isMusic}
               />

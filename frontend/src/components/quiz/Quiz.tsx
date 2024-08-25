@@ -1,16 +1,17 @@
 import QuizQuestion from "./QuizQuestion";
 import QuizAnswer from "./QuizAnswer";
-import { useState } from "react";
 import { useForm, UseFormRegister, UseFormWatch } from "react-hook-form";
+import { usePathname, useRouter } from "next/navigation";
+import { useQuiz } from "@/contexts/QuizContext";
 
 export interface IQuiz {
-  problemNo: number;
+  problemId: number;
+  problemUid: number;
   problemType: string;
   question: string;
   musicPath?: string;
   imagePath?: string;
-  answer?: string;
-  answerList?: string[];
+  selectList?: string[];
 }
 
 interface IForm {
@@ -26,15 +27,21 @@ export interface IQuizForm extends IQuiz {
 
 export default function Quiz(quiz: IQuiz) {
   const { register, handleSubmit, watch } = useForm<IForm>();
-  const [isAnswer, setIsAnswer] = useState<boolean | undefined>();
+  const router = useRouter();
+  const pathname = usePathname();
+  const segments = pathname.split("/");
+
+  const problemId = parseInt(segments[segments.length - 1]);
+  const quizSetId = parseInt(segments[segments.length - 2]);
+
+  const { submitAnswer } = useQuiz();
 
   const isValid = (data: IForm) => {
-    console.log(data);
-    console.log(quiz);
     if (!data.answer) {
       return;
     }
-    setIsAnswer(data.answer.toLowerCase() === quiz.answer?.toLowerCase());
+    submitAnswer({ problemId, answer: data.answer });
+    router.push(`/quiz/${quizSetId}/${problemId}/result`);
   };
 
   return (
@@ -46,19 +53,6 @@ export default function Quiz(quiz: IQuiz) {
         handleSubmit={handleSubmit(isValid)}
         watch={watch}
       />
-      <QuizResult isAnswer={isAnswer} />
     </div>
   );
 }
-
-const QuizResult = ({ isAnswer }: { isAnswer: boolean | undefined }) => {
-  if (isAnswer === undefined) {
-    return null;
-  }
-
-  return (
-    <div className="flex justify-center">
-      {isAnswer === true ? "정답입니다!" : "틀렸습니다!"}
-    </div>
-  );
-};

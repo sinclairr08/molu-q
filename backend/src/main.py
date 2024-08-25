@@ -1,21 +1,13 @@
 import json
 import os
-from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from src.routers import quiz
 
 app = FastAPI()
-
-
-class QuizResponse(BaseModel):
-    problemNo: int
-    problemType: str
-    question: str
-    musicPath: Optional[str]
-    answerList: Optional[list[str]]
-    answer: str
+app.include_router(quiz.router)
 
 
 class HttpResponse(BaseModel):
@@ -38,12 +30,6 @@ async def read_file(fn):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/quiz", response_model=list[QuizResponse])
-async def read_quiz():
-    data = await read_file(f"{os.path.dirname(__file__)}/local/quiz.json")
-    return JSONResponse(content=data)
 
 
 @app.get("/http", response_model=list[HttpResponse])

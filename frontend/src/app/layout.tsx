@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import "./globals.css";
+import { QuizProvider } from "@/contexts/QuizContext";
 
 export const metadata = {
   title: "Next.js",
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Header />
-        <main className="mt-12 mb-20">{children}</main>
-        <Footer />
+        <QuizProvider>
+          <Header />
+          <main className="mt-16 mb-20">{children}</main>
+          <Footer />
+        </QuizProvider>
       </body>
     </html>
   );

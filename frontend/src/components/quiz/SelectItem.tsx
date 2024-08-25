@@ -4,7 +4,7 @@ import { Audio } from "../general";
 interface ISelectItem {
   index: number;
   register: UseFormRegister<any>;
-  answerItem: string;
+  selectItem: string;
   isCurrentClicked: boolean;
   isMusic?: boolean;
 }
@@ -14,20 +14,20 @@ export function cls(...classnames: string[]) {
 }
 
 export default function SelectItem(data: ISelectItem) {
-  const { index, register, answerItem, isCurrentClicked, isMusic } = data;
+  const { index, register, selectItem, isCurrentClicked, isMusic } = data;
 
   return (
     <div
       className={cls(
         "",
-        isCurrentClicked ? "text-red-500" : "text-neutral-800"
+        isCurrentClicked ? "text-cyan-400" : "text-neutral-800",
       )}
     >
       <label className="">
         <span
           className={cls(
             "m-1 px-1.5 border-2 rounded-full",
-            isCurrentClicked ? "border-red-500" : "border-neutral-800"
+            isCurrentClicked ? "border-cyan-400" : "border-neutral-800",
           )}
         >
           {index + 1}
@@ -38,7 +38,7 @@ export default function SelectItem(data: ISelectItem) {
           value={String(index + 1)}
           {...register("answer")}
         />
-        {isMusic ? <Audio path={answerItem} /> : answerItem}
+        {isMusic ? <Audio path={selectItem} /> : selectItem}
       </label>
     </div>
   );
