@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from src.db import (
-    add_quiz,
+    create_quiz,
     read_answer_by_set_problem_id,
     read_quiz_by_set_id,
     read_quiz_sets,
@@ -53,15 +53,15 @@ def get_quiz_by_set_id(set_id: int):
     return JSONResponse(content=data)
 
 
-@router.post("")
-def create_quiz(quiz: QuizRequest):
-    add_quiz(quiz)
-    return JSONResponse(content=f"quiz {quiz.problemId} added successfully")
-
-
 @router.get(
     "/sets/{set_id}/answer/{problem_id}", response_model=list[QuizAnswerResponse]
 )
-def get_quiz_by_set_problem_id(set_id: int, problem_id: int):
+def get_answer_by_set_problem_id(set_id: int, problem_id: int):
     data = read_answer_by_set_problem_id(set_id, problem_id)
     return JSONResponse(content=data)
+
+
+@router.post("")
+def add_quiz(quiz: QuizRequest):
+    create_quiz(quiz)
+    return JSONResponse(content=f"quiz {quiz.problemId} added successfully")

@@ -18,7 +18,7 @@ def read_quiz_by_set_id(set_id: int) -> list:
     return list(collection.find({"quizSetId": set_id}, {"_id": 0, "answer": 0}))
 
 
-def add_quiz(quiz):
+def create_quiz(quiz):
     counters = db["counters"]
     cnt = counters.find_one({"_id": "quiz"}, {"_id": 0})["cnt"]
 
