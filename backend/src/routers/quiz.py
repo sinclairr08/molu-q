@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from src.db import (
+from src.repository.quiz import (
     create_quiz,
     read_answer_by_set_problem_id,
     read_quiz_by_set_id,
