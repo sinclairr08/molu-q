@@ -71,8 +71,6 @@ const QuizAddPage: React.FC = () => {
       selectList: data.selectList || [],
     };
 
-    console.log(updatedData);
-
     try {
       axios.post("/api/v0/quiz", updatedData, {
         headers: {
