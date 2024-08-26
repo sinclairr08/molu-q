@@ -3,6 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface IHttp {
   code: number;
@@ -14,6 +15,9 @@ interface HttpImageProps {
   code: number;
   ext: string;
 }
+
+const fetcher = (url: string) =>
+  axios.get<IHttp[]>(url).then((res) => res.data);
 
 export const HttpImage = ({ code, ext }: HttpImageProps) => {
   return (
@@ -43,17 +47,14 @@ const HttpCard = (cardProps: IHttp) => {
 
 const HttpPage: React.FC = () => {
   const [httpItems, setHttpItems] = useState<IHttp[]>([]);
+  const { data } = useSWR<IHttp[]>(`/api/v0/http`, fetcher);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get("/api/http");
-        setHttpItems(data);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (data) {
+      setHttpItems(data);
+    }
+  }, [data]);
+
   return (
     <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {httpItems.map((httpItem) => (
