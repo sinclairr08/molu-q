@@ -13,6 +13,7 @@ class HttpResponse(BaseModel):
 
 
 class HttpDetailResponse(BaseModel):
+    code: int
     message: str
     ext: str
     description: str
