@@ -8,22 +8,21 @@ import useSWR from "swr";
 export interface IHttp {
   code: number;
   message: string;
-  ext: string;
+  imgPath: string;
   description?: string;
 }
 
 interface HttpImageProps {
-  code: number;
-  ext: string;
+  imgPath: string;
 }
 
 const fetcher = (url: string) =>
   axios.get<IHttp[]>(url).then((res) => res.data);
 
-export const HttpImage = ({ code, ext }: HttpImageProps) => {
+export const HttpImage = ({ imgPath }: HttpImageProps) => {
   return (
     <div className="flex justify-center ">
-      <img src={`/http/${code}.${ext}`} className="w-48 h-48" />
+      <img src={`${imgPath}`} className="w-48 h-48" />
     </div>
   );
 };
