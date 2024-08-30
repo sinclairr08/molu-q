@@ -9,7 +9,7 @@ export default function QuizQuestion(quiz: IQuiz) {
       </div>
 
       {quiz.musicPath && <Audio path={quiz.musicPath} />}
-      {quiz.imagePath && <Image path={quiz.imagePath} />}
+      {quiz.imagePath && <Image imgPath={quiz.imagePath} size={48} />}
     </>
   );
 }
