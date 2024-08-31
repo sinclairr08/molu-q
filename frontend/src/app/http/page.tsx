@@ -9,7 +9,7 @@ import useSWR from "swr";
 export interface IHttp {
   code: number;
   message: string;
-  imgPath: string;
+  imagePath: string;
   description?: string;
 }
 

@@ -1,7 +1,7 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface ImageProps {
-  imgPath: string;
+  imagePath?: string;
   size?: number;
 }
 
@@ -13,10 +13,13 @@ export const Audio = ({ path }: { path: string }) => {
   );
 };
 
-export const Image = ({ imgPath, size }: ImageProps) => {
+export const Image = ({ imagePath, size }: ImageProps) => {
+  if (!imagePath) {
+    return null;
+  }
   return (
     <div className="flex justify-center ">
-      <img src={imgPath} className={size ? `w-${size} h-${size}` : ""} />
+      <img src={imagePath} className={size ? `w-${size} h-${size}` : ""} />
     </div>
   );
 };

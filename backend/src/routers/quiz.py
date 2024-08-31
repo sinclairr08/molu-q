@@ -19,6 +19,7 @@ class QuizResponse(BaseModel):
     problemId: int
     problemType: str
     question: str
+    imagePath: Optional[str]
     musicPath: Optional[str]
     selectList: Optional[list[str]]
 
