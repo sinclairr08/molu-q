@@ -43,3 +43,6 @@ local/
 
 # python cache
 __pycache__/
+
+# env file
+.env
