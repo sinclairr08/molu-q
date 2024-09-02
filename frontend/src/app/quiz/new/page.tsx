@@ -90,6 +90,7 @@ const QuizAddPage: React.FC = () => {
     if (data.image && data.image.length > 0) {
       formData.append("problemId", String(data.problemId));
       formData.append("image", data.image[0]);
+      formData.append("imageName", data.image[0].name);
     }
 
     const updatedData = {
