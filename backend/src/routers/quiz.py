@@ -34,7 +34,8 @@ class QuizRequest(BaseModel):
     problemType: str
     question: str
     answer: str
-    selectList: Optional[list[str]]
+    selectList: Optional[list[str]] = None
+    imagePath: Optional[str] = None
 
 
 class QuizSetResponse(BaseModel):
@@ -64,5 +65,5 @@ def get_answer_by_set_problem_id(set_id: int, problem_id: int):
 
 @router.post("")
 def add_quiz(quiz: QuizRequest):
-    create_quiz(quiz)
+    create_quiz(quiz.model_dump(exclude_none=True))
     return JSONResponse(content=f"quiz {quiz.problemId} added successfully")

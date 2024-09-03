@@ -16,6 +16,10 @@ export interface IQuizInputForm {
   image?: FileList;
 }
 
+interface IQuizRequest extends IQuizInputForm {
+  imagePath?: string;
+}
+
 interface IShortInputRow {
   register: UseFormRegisterReturn<any>;
   label: string;
@@ -81,34 +85,35 @@ const QuizAddPage: React.FC = () => {
 
   const currentProblemType = watch("problemType");
 
-  const isValid = (data: IQuizInputForm) => {
-    if (!data.problemId || !data.question || !data.answer) {
-      return;
-    }
-
+  const uploadImage = async (data: IQuizInputForm) => {
     const formData = new FormData();
     if (data.image && data.image.length > 0) {
-      formData.append("problemId", String(data.problemId));
       formData.append("image", data.image[0]);
       formData.append("imageName", data.image[0].name);
     }
 
-    const updatedData = {
-      ...data,
-      quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
-      selectList: data.selectList || [],
-    };
-
     try {
-      axios.post("/api/v0/quiz", updatedData, {
+      const response = await axios.post("/api/v0/upload", formData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      axios.post("/api/v0/upload", formData, {
+      if (response.data && response.data.imagePath) {
+        return response.data.imagePath;
+      }
+      return "";
+    } catch (error) {
+      console.error(`${error} occurred`);
+      return "";
+    }
+  };
+
+  const uploadQuiz = async (data: IQuizRequest) => {
+    try {
+      axios.post("/api/v0/quiz", data, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
 
@@ -116,6 +121,25 @@ const QuizAddPage: React.FC = () => {
     } catch (error) {
       console.error(`${error} occurred`);
     }
+  };
+
+  const isValid = async (data: IQuizInputForm) => {
+    if (!data.problemId || !data.question || !data.answer) {
+      return;
+    }
+
+    let imagePath = "";
+    if (data.image && data.image.length > 0) {
+      imagePath = await uploadImage(data);
+    }
+
+    const updatedData = {
+      ...data,
+      quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
+      ...(imagePath !== "" && { imagePath }),
+    };
+
+    await uploadQuiz(updatedData);
   };
   return (
     <form onSubmit={handleSubmit(isValid)}>

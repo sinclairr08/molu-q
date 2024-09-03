@@ -9,11 +9,10 @@ app.include_router(http.router)
 
 @app.post("/v0/upload")
 def upload(
-    problemId: int = Form(...),
     image: UploadFile = File(...),
     imageName: str = Form(...),
 ):
     with open(imageName, "wb") as f:
         f.write(image.file.read())
 
-    return JSONResponse(content="OK")
+    return JSONResponse(content={"imagePath": imageName})
