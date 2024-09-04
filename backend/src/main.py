@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from src.routers import http, quiz
 
 app = FastAPI()
@@ -12,7 +13,12 @@ def upload(
     image: UploadFile = File(...),
     imageName: str = Form(...),
 ):
-    with open(imageName, "wb") as f:
+    with open(f"images/{imageName}", "wb") as f:
         f.write(image.file.read())
 
-    return JSONResponse(content={"imagePath": imageName})
+    return JSONResponse(
+        content={"imagePath": f"http://localhost:8000/images/{imageName}"}
+    )
+
+
+app.mount("/images", StaticFiles(directory="images"))

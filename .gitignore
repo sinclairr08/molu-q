@@ -46,3 +46,6 @@ __pycache__/
 
 # env file
 .env
+
+# temporary image files
+backend/images
