@@ -17,12 +17,12 @@ IMAGE_SERVER_URL = os.getenv("IMAGE_SERVER_URL")
 @app.post("/v0/upload")
 def upload(
     image: UploadFile = File(...),
-    imageName: str = Form(...),
+    imageId: str = Form(...),
 ):
-    with open(f"images/{imageName}", "wb") as f:
+    with open(f"images/{imageId}", "wb") as f:
         f.write(image.file.read())
 
-    return JSONResponse(content={"imagePath": f"{IMAGE_SERVER_URL}/images/{imageName}"})
+    return JSONResponse(content={"imagePath": f"{IMAGE_SERVER_URL}/images/{imageId}"})
 
 
 app.mount("/images", StaticFiles(directory="images"))
