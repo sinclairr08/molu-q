@@ -75,7 +75,7 @@ const QuizAddPage: React.FC = () => {
   const addSelectItem = () => {
     const idx = selectItems ? selectItems.length : 0;
     setSelectItems((prev) =>
-      prev ? [...prev, `객관식 ${idx + 1}`] : [`객관식 ${idx + 1}`],
+      prev ? [...prev, `객관식 ${idx + 1}`] : [`객관식 ${idx + 1}`]
     );
   };
 
@@ -91,15 +91,15 @@ const QuizAddPage: React.FC = () => {
       formData.append("image", data.image[0]);
       formData.append(
         "imageId",
-        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.image[0].name}`,
+        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.image[0].name}`
       );
     }
 
     try {
       const response = await axios.post("/api/v0/upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          "Content-Type": "multipart/form-data"
+        }
       });
 
       if (response.data && response.data.imagePath) {
@@ -116,8 +116,8 @@ const QuizAddPage: React.FC = () => {
     try {
       axios.post("/api/v0/quiz", data, {
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
 
       reset();
@@ -139,7 +139,7 @@ const QuizAddPage: React.FC = () => {
     const updatedData = {
       ...data,
       quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
-      ...(imagePath !== "" && { imagePath }),
+      ...(imagePath !== "" && { imagePath })
     };
 
     await uploadQuiz(updatedData);
