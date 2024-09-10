@@ -23,9 +23,9 @@ def create_quiz(quiz):
     cnt = counters.find_one({"_id": "quiz"}, {"_id": 0})["cnt"]
 
     collection = db["quizs"]
+    quiz["problemUid"] = cnt
 
-    updated_quiz = dict(quiz.copy(update={"problemUid": cnt}))
-    collection.insert_one(updated_quiz)
+    collection.insert_one(quiz)
 
     counters.update_one({"_id": "quiz"}, {"$set": {"cnt": cnt + 1}})
 

@@ -13,6 +13,11 @@ export interface IQuizInputForm {
   question: string;
   selectList?: string[];
   answer: string;
+  image?: FileList;
+}
+
+interface IQuizRequest extends IQuizInputForm {
+  imagePath?: string;
 }
 
 interface IShortInputRow {
@@ -35,6 +40,26 @@ const ShortInputRow = ({ register, label }: IShortInputRow) => {
   );
 };
 
+const FileInputRow = ({ register, label }: IShortInputRow) => {
+  return (
+    <label className="flex items-center">
+      <span className="px-2 w-24">{label}</span>
+      <label htmlFor="file-upload">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="w-48 h-48 fill-current text-cyan-600 cursor-pointer"
+        >
+          <path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z" />
+          <path d="M16,10.5A3.5,3.5,0,1,0,12.5,7,3.5,3.5,0,0,0,16,10.5Zm0-5A1.5,1.5,0,1,1,14.5,7,1.5,1.5,0,0,1,16,5.5Z" />
+        </svg>
+
+        <input id="file-upload" type="file" {...register} className="sr-only" />
+      </label>
+    </label>
+  );
+};
+
 const SelectBoxRow = ({ register, label, itemList }: ISelectBoxRow) => {
   return (
     <label className="flex items-center">
@@ -50,7 +75,7 @@ const QuizAddPage: React.FC = () => {
   const addSelectItem = () => {
     const idx = selectItems ? selectItems.length : 0;
     setSelectItems((prev) =>
-      prev ? [...prev, `객관식 ${idx + 1}`] : [`객관식 ${idx + 1}`],
+      prev ? [...prev, `객관식 ${idx + 1}`] : [`객관식 ${idx + 1}`]
     );
   };
 
@@ -60,28 +85,64 @@ const QuizAddPage: React.FC = () => {
 
   const currentProblemType = watch("problemType");
 
-  const isValid = (data: IQuizInputForm) => {
-    if (!data.problemId || !data.question || !data.answer) {
-      return;
+  const uploadImage = async (data: IQuizInputForm) => {
+    const formData = new FormData();
+    if (data.image && data.image.length > 0) {
+      formData.append("image", data.image[0]);
+      formData.append(
+        "imageId",
+        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.image[0].name}`
+      );
     }
 
-    const updatedData = {
-      ...data,
-      quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
-      selectList: data.selectList || [],
-    };
-
     try {
-      axios.post("/api/v0/quiz", updatedData, {
+      const response = await axios.post("/api/v0/upload", formData, {
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      if (response.data && response.data.imagePath) {
+        return response.data.imagePath;
+      }
+      return "";
+    } catch (error) {
+      console.error(`${error} occurred`);
+      return "";
+    }
+  };
+
+  const uploadQuiz = async (data: IQuizRequest) => {
+    try {
+      axios.post("/api/v0/quiz", data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
       });
 
       reset();
     } catch (error) {
       console.error(`${error} occurred`);
     }
+  };
+
+  const isValid = async (data: IQuizInputForm) => {
+    if (!data.problemId || !data.question || !data.answer) {
+      return;
+    }
+
+    let imagePath = "";
+    if (data.image && data.image.length > 0) {
+      imagePath = await uploadImage(data);
+    }
+
+    const updatedData = {
+      ...data,
+      quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
+      ...(imagePath !== "" && { imagePath })
+    };
+
+    await uploadQuiz(updatedData);
   };
   return (
     <form onSubmit={handleSubmit(isValid)}>
@@ -124,6 +185,7 @@ const QuizAddPage: React.FC = () => {
             </>
           )}
         <ShortInputRow register={register("answer")} label="답" />
+        <FileInputRow register={register("image")} label="이미지" />
         <SubmitButton />
       </div>
     </form>

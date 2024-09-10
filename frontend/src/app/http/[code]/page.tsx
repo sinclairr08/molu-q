@@ -1,11 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { HttpImage, IHttp } from "../page";
+import { IHttp } from "../page";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import useSWR from "swr";
+import { Image } from "@/components/general";
 
 const fetcher = (url: string) => axios.get<IHttp>(url).then((res) => res.data);
 
@@ -16,7 +17,7 @@ const HttpDetailCard = (cardProps: IHttp) => {
       <div className="text-center text-white font-bold">
         {cardProps.message}
       </div>
-      <HttpImage {...cardProps} />
+      <Image {...cardProps} size={64} />
       <div className="text-center text-white font-bold text-xs whitespace-pre-line">
         {cardProps.description}
       </div>

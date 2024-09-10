@@ -1,5 +1,6 @@
 "use client";
 
+import { Image } from "@/components/general";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,25 +9,12 @@ import useSWR from "swr";
 export interface IHttp {
   code: number;
   message: string;
-  ext: string;
+  imagePath: string;
   description?: string;
-}
-
-interface HttpImageProps {
-  code: number;
-  ext: string;
 }
 
 const fetcher = (url: string) =>
   axios.get<IHttp[]>(url).then((res) => res.data);
-
-export const HttpImage = ({ code, ext }: HttpImageProps) => {
-  return (
-    <div className="flex justify-center ">
-      <img src={`/http/${code}.${ext}`} className="w-48 h-48" />
-    </div>
-  );
-};
 
 const HttpCard = (cardProps: IHttp) => {
   return (
@@ -39,7 +27,7 @@ const HttpCard = (cardProps: IHttp) => {
           <div className="text-center text-white font-bold">
             {cardProps.message}
           </div>
-          <HttpImage {...cardProps} />
+          <Image {...cardProps} size={48} />
         </div>
       </Link>
     </div>

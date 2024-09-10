@@ -9,13 +9,13 @@ router = APIRouter(prefix="/v0/http")
 class HttpResponse(BaseModel):
     code: int
     message: str
-    ext: str
+    imagePath: str
 
 
 class HttpDetailResponse(BaseModel):
     code: int
     message: str
-    ext: str
+    imagePath: str
     description: str
 
 
