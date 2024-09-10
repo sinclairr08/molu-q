@@ -18,7 +18,7 @@ export const Image = ({ imagePath, size }: ImageProps) => {
     return null;
   }
   return (
-    <div className="flex justify-center ">
+    <div className="flex justify-center">
       <img src={imagePath} className={size ? `w-${size} h-${size}` : ""} />
     </div>
   );
