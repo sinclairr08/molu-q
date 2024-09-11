@@ -3,7 +3,7 @@ import { IQuizForm } from "./Quiz";
 import { SubmitButton } from "../general";
 
 export const ShortInput = ({
-  register,
+  register
 }: {
   register: UseFormRegisterReturn<any>;
 }) => {
@@ -18,6 +18,7 @@ export const ShortInput = ({
   );
 };
 
+// Move to general
 export default function ShortAnswer({ register, handleSubmit }: IQuizForm) {
   return (
     <>

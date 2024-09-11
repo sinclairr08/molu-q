@@ -49,6 +49,11 @@ const HttpPage: React.FC = () => {
       {httpItems.map((httpItem) => (
         <HttpCard key={httpItem.code} {...httpItem} />
       ))}
+      <Link href={"/http/new"}>
+        <div className="flex flex-col justify-center items-center border-cyan-400 border-2 rounded-full p-3 m-2 whitespace-nowrap overflow-hidden text-sm bg-cyan-100">
+          HTTP 추가하기
+        </div>
+      </Link>
     </div>
   );
 };
