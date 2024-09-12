@@ -1,7 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/components/general";
-import { ShortInput } from "@/components/quiz/ShortAnswer";
+import { ShortInput, SubmitButton } from "@/components/general";
 import axios from "axios";
 import { useForm, UseFormRegisterReturn } from "react-hook-form";
 

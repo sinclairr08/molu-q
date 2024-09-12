@@ -55,3 +55,19 @@ export const SelectBox = ({ register, itemList }: ISelectBoxInput) => {
     </select>
   );
 };
+
+export const ShortInput = ({
+  register
+}: {
+  register: UseFormRegisterReturn<any>;
+}) => {
+  return (
+    <div className="flex justify-center">
+      <input
+        className="border-2 border-cyan-200 rounded-md p-1 text-cyan-600
+        focus:border-cyan-600 focus:outline-none w-48"
+        {...register}
+      />
+    </div>
+  );
+};
