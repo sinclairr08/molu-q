@@ -114,8 +114,8 @@ const HttpAddPage: React.FC = () => {
     <form onSubmit={handleSubmit(isValid)}>
       <div className="flex flex-col items-center space-y-3 pb-8 mx-12">
         <ShortInputRow register={register("code")} label="코드" />
-        <ShortInputRow register={register("description")} label="설명" />
         <ShortInputRow register={register("message")} label="메시지" />
+        <ShortInputRow register={register("description")} label="설명" />
         <FileInputRow register={register("image")} label="이미지" />
         <SubmitButton />
       </div>
