@@ -1,6 +1,6 @@
 "use client";
 
-import { Image } from "@/components/general";
+import { AddButtonLink, Image } from "@/components/general";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -45,16 +45,14 @@ const HttpPage: React.FC = () => {
   }, [data]);
 
   return (
-    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {httpItems.map((httpItem) => (
-        <HttpCard key={httpItem.code} {...httpItem} />
-      ))}
-      <Link href={"/http/new"}>
-        <div className="flex flex-col justify-center items-center border-cyan-400 border-2 rounded-full p-3 m-2 whitespace-nowrap overflow-hidden text-sm bg-cyan-100">
-          HTTP 추가하기
-        </div>
-      </Link>
-    </div>
+    <>
+      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {httpItems.map((httpItem) => (
+          <HttpCard key={httpItem.code} {...httpItem} />
+        ))}
+      </div>
+      <AddButtonLink link="/http/new" />
+    </>
   );
 };
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface ImageProps {
@@ -68,6 +69,22 @@ export const ShortInput = ({
         focus:border-cyan-600 focus:outline-none w-48"
         {...register}
       />
+    </div>
+  );
+};
+
+export const AddButtonLink = ({ link }: { link: string }) => {
+  return (
+    <div className="mx-auto mt-12 w-12">
+      <Link href={link}>
+        <div
+          className="mt-4 flex flex-col justify-center items-center
+        rounded-full p-3 whitespace-nowrap overflow-hidden
+        text-lg text-white font-bold bg-cyan-400"
+        >
+          +
+        </div>
+      </Link>
     </div>
   );
 };

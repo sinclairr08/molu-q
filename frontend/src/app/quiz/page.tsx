@@ -1,5 +1,6 @@
 "use client";
 
+import { AddButtonLink } from "@/components/general";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -34,16 +35,14 @@ const QuizIdPage: React.FC = () => {
     fetchData();
   }, []);
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {quizSets.map((quizSet) => (
-        <QuizIdBlock key={quizSet.quizSetId} {...quizSet} />
-      ))}
-      <Link href={"/quiz/new"}>
-        <div className="flex flex-col justify-center items-center border-cyan-400 border-2 rounded-full p-3 m-2 whitespace-nowrap overflow-hidden text-sm bg-cyan-100">
-          퀴즈 추가하기
-        </div>
-      </Link>
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {quizSets.map((quizSet) => (
+          <QuizIdBlock key={quizSet.quizSetId} {...quizSet} />
+        ))}
+      </div>
+      <AddButtonLink link="/quiz/new" />
+    </>
   );
 };
 
