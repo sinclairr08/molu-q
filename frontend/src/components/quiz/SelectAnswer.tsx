@@ -1,6 +1,6 @@
 import SelectItem from "@/components/quiz/SelectItem";
 import { IQuizForm } from "@/components/quiz/Quiz";
-import { SubmitButton } from "../general";
+import { SubmitButton } from "../general/general";
 
 export default function SelectAnswer({
   problemId,
@@ -8,7 +8,7 @@ export default function SelectAnswer({
   register,
   handleSubmit,
   watch,
-  isMusic,
+  isMusic
 }: IQuizForm) {
   return (
     <div className="flex justify-center">

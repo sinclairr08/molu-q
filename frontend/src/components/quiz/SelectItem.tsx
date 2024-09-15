@@ -1,5 +1,5 @@
 import { UseFormRegister } from "react-hook-form";
-import { Audio } from "../general";
+import { Audio } from "../general/general";
 
 interface ISelectItem {
   index: number;
@@ -20,14 +20,14 @@ export default function SelectItem(data: ISelectItem) {
     <div
       className={cls(
         "",
-        isCurrentClicked ? "text-cyan-400" : "text-neutral-800",
+        isCurrentClicked ? "text-cyan-400" : "text-neutral-800"
       )}
     >
       <label className="">
         <span
           className={cls(
             "m-1 px-1.5 border-2 rounded-full",
-            isCurrentClicked ? "border-cyan-400" : "border-neutral-800",
+            isCurrentClicked ? "border-cyan-400" : "border-neutral-800"
           )}
         >
           {index + 1}

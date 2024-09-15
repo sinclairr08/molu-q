@@ -1,22 +1,5 @@
-import { UseFormRegisterReturn } from "react-hook-form";
 import { IQuizForm } from "./Quiz";
-import { SubmitButton } from "../general";
-
-export const ShortInput = ({
-  register,
-}: {
-  register: UseFormRegisterReturn<any>;
-}) => {
-  return (
-    <div className="flex justify-center">
-      <input
-        className="border-2 border-cyan-200 rounded-md p-1 text-cyan-600
-        focus:border-cyan-600 focus:outline-none w-48"
-        {...register}
-      />
-    </div>
-  );
-};
+import { ShortInput, SubmitButton } from "../general/general";
 
 export default function ShortAnswer({ register, handleSubmit }: IQuizForm) {
   return (

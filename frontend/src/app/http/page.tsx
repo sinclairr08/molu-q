@@ -1,6 +1,6 @@
 "use client";
 
-import { Image } from "@/components/general";
+import { AddButtonLink, Image } from "@/components/general/general";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -45,11 +45,14 @@ const HttpPage: React.FC = () => {
   }, [data]);
 
   return (
-    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {httpItems.map((httpItem) => (
-        <HttpCard key={httpItem.code} {...httpItem} />
-      ))}
-    </div>
+    <>
+      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {httpItems.map((httpItem) => (
+          <HttpCard key={httpItem.code} {...httpItem} />
+        ))}
+      </div>
+      <AddButtonLink link="/http/new" />
+    </>
   );
 };
 

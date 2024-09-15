@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 interface ImageProps {
@@ -53,5 +54,37 @@ export const SelectBox = ({ register, itemList }: ISelectBoxInput) => {
         </option>
       ))}
     </select>
+  );
+};
+
+export const ShortInput = ({
+  register
+}: {
+  register: UseFormRegisterReturn<any>;
+}) => {
+  return (
+    <div className="flex justify-center">
+      <input
+        className="border-2 border-cyan-200 rounded-md p-1 text-cyan-600
+        focus:border-cyan-600 focus:outline-none w-48"
+        {...register}
+      />
+    </div>
+  );
+};
+
+export const AddButtonLink = ({ link }: { link: string }) => {
+  return (
+    <div className="mx-auto mt-12 w-12">
+      <Link href={link}>
+        <div
+          className="mt-4 flex flex-col justify-center items-center
+        rounded-full p-3 whitespace-nowrap overflow-hidden
+        text-lg text-white font-bold bg-cyan-400"
+        >
+          +
+        </div>
+      </Link>
+    </div>
   );
 };
