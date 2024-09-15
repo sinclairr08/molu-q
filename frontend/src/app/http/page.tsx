@@ -1,6 +1,6 @@
 "use client";
 
-import { AddButtonLink, Image } from "@/components/general";
+import { AddButtonLink, Image } from "@/components/general/general";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";

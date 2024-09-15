@@ -1,5 +1,5 @@
 import { IQuizForm } from "./Quiz";
-import { ShortInput, SubmitButton } from "../general";
+import { ShortInput, SubmitButton } from "../general/general";
 
 export default function ShortAnswer({ register, handleSubmit }: IQuizForm) {
   return (

@@ -1,4 +1,4 @@
-import { Audio, Image } from "../general";
+import { Audio, Image } from "../general/general";
 import { IQuiz } from "./Quiz";
 
 export default function QuizQuestion(quiz: IQuiz) {
