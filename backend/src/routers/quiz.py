@@ -20,7 +20,7 @@ class QuizResponse(BaseModel):
     problemType: str
     question: str
     imagePath: Optional[str]
-    musicPath: Optional[str]
+    audioPath: Optional[str]
     selectList: Optional[list[str]]
 
 
@@ -36,6 +36,7 @@ class QuizRequest(BaseModel):
     answer: str
     selectList: Optional[list[str]] = None
     imagePath: Optional[str] = None
+    audioPath: Optional[str] = None
 
 
 class QuizSetResponse(BaseModel):

@@ -38,7 +38,7 @@ export default function SelectItem(data: ISelectItem) {
           value={String(index + 1)}
           {...register("answer")}
         />
-        {isMusic ? <Audio musicPath={selectItem} /> : selectItem}
+        {isMusic ? <Audio audioPath={selectItem} /> : selectItem}
       </label>
     </div>
   );

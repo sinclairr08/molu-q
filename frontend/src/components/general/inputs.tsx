@@ -1,5 +1,6 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 import { SelectBox, ShortInput } from "./general";
+import { AudioIcon } from "./audio";
 
 interface IShortInputRow {
   register: UseFormRegisterReturn<any>;
@@ -28,6 +29,18 @@ export const FileInputRow = ({ register, label }: IShortInputRow) => {
       <label htmlFor="file-upload">
         <input id="file-upload" type="file" {...register} className="sr-only" />
         <ImageIcon />
+      </label>
+    </label>
+  );
+};
+
+export const AudioFileInputRow = ({ register, label }: IShortInputRow) => {
+  return (
+    <label className="flex items-center">
+      <span className="px-2 w-24">{label}</span>
+      <label htmlFor="file-upload">
+        <input id="file-upload" type="file" {...register} className="sr-only" />
+        <AudioIcon />
       </label>
     </label>
   );

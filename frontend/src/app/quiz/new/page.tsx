@@ -2,6 +2,7 @@
 
 import { SubmitButton } from "@/components/general/general";
 import {
+  AudioFileInputRow,
   FileInputRow,
   SelectBoxRow,
   ShortInputRow
@@ -10,7 +11,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export interface IQuizInputForm {
+interface IQuizInputForm {
   quizSetId?: number;
   problemId: number;
   problemType: string;
@@ -18,10 +19,12 @@ export interface IQuizInputForm {
   selectList?: string[];
   answer: string;
   image?: FileList;
+  audio?: FileList;
 }
 
 interface IQuizRequest extends IQuizInputForm {
   imagePath?: string;
+  audioPath?: string;
 }
 
 const QuizAddPage: React.FC = () => {
@@ -40,7 +43,7 @@ const QuizAddPage: React.FC = () => {
 
   const currentProblemType = watch("problemType");
 
-  const uploadImage = async (data: IQuizInputForm) => {
+  const uploadImage = async (data: IQuizRequest) => {
     const formData = new FormData();
     if (data.image && data.image.length > 0) {
       formData.append("image", data.image[0]);
@@ -51,7 +54,7 @@ const QuizAddPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.post("/api/v0/upload", formData, {
+      const response = await axios.post("/api/v0/upload/images", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -59,6 +62,33 @@ const QuizAddPage: React.FC = () => {
 
       if (response.data && response.data.imagePath) {
         return response.data.imagePath;
+      }
+      return "";
+    } catch (error) {
+      console.error(`${error} occurred`);
+      return "";
+    }
+  };
+
+  const uploadAudio = async (data: IQuizRequest) => {
+    const formData = new FormData();
+    if (data.audio && data.audio.length > 0) {
+      formData.append("audio", data.audio[0]);
+      formData.append(
+        "audioId",
+        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.audio[0].name}`
+      );
+    }
+
+    try {
+      const response = await axios.post("/api/v0/upload/audios", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      if (response.data && response.data.audioPath) {
+        return response.data.audioPath;
       }
       return "";
     } catch (error) {
@@ -91,14 +121,21 @@ const QuizAddPage: React.FC = () => {
       imagePath = await uploadImage(data);
     }
 
+    let audioPath = "";
+    if (data.audio && data.audio.length > 0) {
+      audioPath = await uploadAudio(data);
+    }
+
     const updatedData = {
       ...data,
       quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
-      ...(imagePath !== "" && { imagePath })
+      ...(imagePath !== "" && { imagePath }),
+      ...(audioPath !== "" && { audioPath })
     };
 
     await uploadQuiz(updatedData);
   };
+
   return (
     <form onSubmit={handleSubmit(isValid)}>
       <div className="flex flex-col items-center space-y-3 pb-8 mx-12">
@@ -111,6 +148,8 @@ const QuizAddPage: React.FC = () => {
         />
 
         <ShortInputRow register={register("question")} label="문제" />
+        <AudioFileInputRow register={register("audio")} label="음악" />
+        <FileInputRow register={register("image")} label="이미지" />
 
         {currentProblemType &&
           currentProblemType.toLowerCase().includes("select") && (
@@ -140,7 +179,6 @@ const QuizAddPage: React.FC = () => {
             </>
           )}
         <ShortInputRow register={register("answer")} label="답" />
-        <FileInputRow register={register("image")} label="이미지" />
         <SubmitButton />
       </div>
     </form>
