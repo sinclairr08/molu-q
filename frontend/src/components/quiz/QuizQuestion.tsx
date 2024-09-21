@@ -1,4 +1,5 @@
-import { Audio, Image } from "../general/general";
+import { Image } from "@/components/general/general";
+import { Audio } from "@/components/general/audio";
 import { IQuiz } from "./Quiz";
 
 export default function QuizQuestion(quiz: IQuiz) {
@@ -8,7 +9,7 @@ export default function QuizQuestion(quiz: IQuiz) {
         {quiz.problemId}: {quiz.question}
       </div>
 
-      {quiz.musicPath && <Audio path={quiz.musicPath} />}
+      <Audio {...quiz} />
       <Image {...quiz} size={48} />
     </>
   );

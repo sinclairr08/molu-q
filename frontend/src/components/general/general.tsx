@@ -6,14 +6,6 @@ interface ImageProps {
   size?: number;
 }
 
-export const Audio = ({ path }: { path: string }) => {
-  return (
-    <div className="flex justify-center">
-      <audio controls src={`/quiz/music/${path}.mp3`} />
-    </div>
-  );
-};
-
 export const Image = ({ imagePath, size }: ImageProps) => {
   if (!imagePath) {
     return null;
