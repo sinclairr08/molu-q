@@ -46,6 +46,24 @@ export const AudioFileInputRow = ({ register, label }: IShortInputRow) => {
   );
 };
 
+export const AudioFilesInputRow = ({ register, label }: IShortInputRow) => {
+  return (
+    <label className="flex items-center">
+      <span className="px-2 w-24">{label}</span>
+      <label htmlFor="file-upload2">
+        <input
+          id="file-upload2"
+          type="file"
+          {...register}
+          className="sr-only"
+          multiple
+        />
+        <AudioIcon />
+      </label>
+    </label>
+  );
+};
+
 export const SelectBoxRow = ({ register, label, itemList }: ISelectBoxRow) => {
   return (
     <label className="flex items-center">

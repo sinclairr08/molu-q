@@ -3,6 +3,7 @@
 import { SubmitButton } from "@/components/general/general";
 import {
   AudioFileInputRow,
+  AudioFilesInputRow,
   FileInputRow,
   SelectBoxRow,
   ShortInputRow
@@ -20,6 +21,7 @@ interface IQuizInputForm {
   answer: string;
   image?: FileList;
   audio?: FileList;
+  audios?: FileList;
 }
 
 interface IQuizRequest extends IQuizInputForm {
@@ -151,33 +153,39 @@ const QuizAddPage: React.FC = () => {
         <AudioFileInputRow register={register("audio")} label="음악" />
         <FileInputRow register={register("image")} label="이미지" />
 
-        {currentProblemType &&
-          currentProblemType.toLowerCase().includes("select") && (
-            <>
-              <div className="flex space-x-2 text-sm">
-                <button
-                  onClick={addSelectItem}
-                  className="cursor-pointer rounded-md bg-cyan-200 p-2"
-                >
-                  객관식 문제 추가
-                </button>
-                <button
-                  onClick={deleteSelectItem}
-                  className="cursor-pointer rounded-md bg-cyan-200 p-2"
-                >
-                  객관식 문제 제거
-                </button>
-              </div>
-              {selectItems &&
-                selectItems.map((selectItem, index) => (
-                  <ShortInputRow
-                    register={register(`selectList.${index}`)}
-                    label={selectItem}
-                    key={selectItem}
-                  />
-                ))}
-            </>
-          )}
+        {currentProblemType && currentProblemType === "select" ? (
+          <>
+            <div className="flex space-x-2 text-sm">
+              <button
+                onClick={addSelectItem}
+                className="cursor-pointer rounded-md bg-cyan-200 p-2"
+              >
+                객관식 문제 추가
+              </button>
+              <button
+                onClick={deleteSelectItem}
+                className="cursor-pointer rounded-md bg-cyan-200 p-2"
+              >
+                객관식 문제 제거
+              </button>
+            </div>
+            {selectItems &&
+              selectItems.map((selectItem, index) => (
+                <ShortInputRow
+                  register={register(`selectList.${index}`)}
+                  label={selectItem}
+                  key={selectItem}
+                />
+              ))}
+          </>
+        ) : currentProblemType === "musicSelect" ? (
+          <AudioFilesInputRow
+            register={register("audios")}
+            label="음악 객관식 (중복 선택 가능)"
+          />
+        ) : (
+          <></>
+        )}
         <ShortInputRow register={register("answer")} label="답" />
         <SubmitButton />
       </div>
