@@ -99,6 +99,43 @@ const QuizAddPage: React.FC = () => {
     }
   };
 
+  const uploadAudios = async (data: IQuizRequest) => {
+    if (!data.audios) {
+      return [];
+    }
+
+    const audios = Array.from(data.audios);
+    const results: any = [];
+
+    console.log(audios);
+
+    for (const audio of audios) {
+      const formData = new FormData();
+      formData.append("audio", audio);
+      formData.append(
+        "audioId",
+        `quiz_answer_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`
+      );
+
+      try {
+        const response = await axios.post("/api/v0/upload/audios", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+
+        if (response.data && response.data.audioPath) {
+          results.push(response.data.audioPath);
+        }
+      } catch (error) {
+        console.error(`${error} occurred`);
+        return [];
+      }
+    }
+
+    return results;
+  };
+
   const uploadQuiz = async (data: IQuizRequest) => {
     try {
       axios.post("/api/v0/quiz", data, {
@@ -128,11 +165,17 @@ const QuizAddPage: React.FC = () => {
       audioPath = await uploadAudio(data);
     }
 
+    let audiosPath: any = [];
+    if (data.audios && data.audios.length > 0) {
+      audiosPath = await uploadAudios(data);
+    }
+
     const updatedData = {
       ...data,
       quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
       ...(imagePath !== "" && { imagePath }),
-      ...(audioPath !== "" && { audioPath })
+      ...(audioPath !== "" && { audioPath }),
+      ...(audiosPath.length !== 0 && { audiosPath })
     };
 
     await uploadQuiz(updatedData);
