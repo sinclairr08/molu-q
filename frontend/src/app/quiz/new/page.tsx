@@ -29,6 +29,26 @@ interface IQuizRequest extends IQuizInputForm {
   audioPath?: string;
 }
 
+const uploadAudioApi = async (audio: File, fn: string): Promise<string> => {
+  const formData = new FormData();
+
+  formData.append("audio", audio);
+  formData.append("audioId", fn);
+
+  try {
+    const { data } = await axios.post("/api/v0/upload/audios", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+
+    return data?.audioPath || "";
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
+
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
   const [selectItems, setSelectItems] = useState<string[]>();
@@ -72,65 +92,35 @@ const QuizAddPage: React.FC = () => {
     }
   };
 
-  const uploadAudio = async (data: IQuizRequest) => {
-    const formData = new FormData();
-    if (data.audio && data.audio.length > 0) {
-      formData.append("audio", data.audio[0]);
-      formData.append(
-        "audioId",
-        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.audio[0].name}`
-      );
-    }
-
-    try {
-      const response = await axios.post("/api/v0/upload/audios", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
-
-      if (response.data && response.data.audioPath) {
-        return response.data.audioPath;
-      }
-      return "";
-    } catch (error) {
-      console.error(`${error} occurred`);
+  const uploadAudio = async (data: IQuizRequest): Promise<string> => {
+    if (!data.audio || data.audio.length === 0) {
       return "";
     }
+
+    const audio = data.audio[0];
+    const fn = `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`;
+    const result = await uploadAudioApi(audio, fn);
+
+    return result;
   };
 
-  const uploadAudios = async (data: IQuizRequest) => {
+  const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
     if (!data.audios) {
       return [];
     }
 
     const audios = Array.from(data.audios);
-    const results: any = [];
-
-    console.log(audios);
+    const results: string[] = [];
 
     for (const audio of audios) {
-      const formData = new FormData();
-      formData.append("audio", audio);
-      formData.append(
-        "audioId",
-        `quiz_answer_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`
-      );
+      const fn = `quiz_answer_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`;
+      const result = await uploadAudioApi(audio, fn);
 
-      try {
-        const response = await axios.post("/api/v0/upload/audios", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
-
-        if (response.data && response.data.audioPath) {
-          results.push(response.data.audioPath);
-        }
-      } catch (error) {
-        console.error(`${error} occurred`);
+      if (!result) {
         return [];
       }
+
+      results.push(result);
     }
 
     return results;
