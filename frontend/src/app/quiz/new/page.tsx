@@ -49,6 +49,26 @@ const uploadAudioApi = async (audio: File, fn: string): Promise<string> => {
   }
 };
 
+const uploadImageApi = async (image: File, fn: string): Promise<string> => {
+  const formData = new FormData();
+
+  formData.append("image", image);
+  formData.append("imageId", fn);
+
+  try {
+    const { data } = await axios.post("/api/v0/upload/images", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+
+    return data?.imagePath || "";
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
+
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
   const [selectItems, setSelectItems] = useState<string[]>();
@@ -65,31 +85,16 @@ const QuizAddPage: React.FC = () => {
 
   const currentProblemType = watch("problemType");
 
-  const uploadImage = async (data: IQuizRequest) => {
-    const formData = new FormData();
-    if (data.image && data.image.length > 0) {
-      formData.append("image", data.image[0]);
-      formData.append(
-        "imageId",
-        `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${data.image[0].name}`
-      );
-    }
-
-    try {
-      const response = await axios.post("/api/v0/upload/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
-
-      if (response.data && response.data.imagePath) {
-        return response.data.imagePath;
-      }
-      return "";
-    } catch (error) {
-      console.error(`${error} occurred`);
+  const uploadImage = async (data: IQuizRequest): Promise<string> => {
+    if (!data.image || data.image.length === 0) {
       return "";
     }
+
+    const image = data.image[0];
+    const fn = `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${image.name}`;
+    const result = await uploadImageApi(image, fn);
+
+    return result;
   };
 
   const uploadAudio = async (data: IQuizRequest): Promise<string> => {
