@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface IQuizInputForm {
-  quizSetId?: number;
+  quizSetId: number;
   problemId: number;
   problemType: string;
   question: string;
@@ -53,6 +53,11 @@ const uploadApi = async (
   }
 };
 
+const getSuffix = (filename: string): string => {
+  const suffix = filename.split(".").pop();
+  return suffix || "";
+};
+
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
   const [selectItems, setSelectItems] = useState<string[]>();
@@ -75,7 +80,7 @@ const QuizAddPage: React.FC = () => {
     }
 
     const image = data.image[0];
-    const fn = `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${image.name}`;
+    const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_image.${getSuffix(image.name)}`;
     const result = await uploadApi(image, fn, "image");
 
     return result;
@@ -87,7 +92,7 @@ const QuizAddPage: React.FC = () => {
     }
 
     const audio = data.audio[0];
-    const fn = `quiz_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`;
+    const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_audio.${getSuffix(audio.name)}`;
     const result = await uploadApi(audio, fn, "audio");
 
     return result;
@@ -101,8 +106,10 @@ const QuizAddPage: React.FC = () => {
     const audios = Array.from(data.audios);
     const results: string[] = [];
 
+    let index = 0;
+
     for (const audio of audios) {
-      const fn = `quiz_answer_set${data.quizSetId ? Number(data.quizSetId) : 0}_problem${data.problemId}_${audio.name}`;
+      const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_audio${index}.${getSuffix(audio.name)}`;
       const result = await uploadApi(audio, fn, "audio");
 
       if (!result) {
@@ -110,6 +117,7 @@ const QuizAddPage: React.FC = () => {
       }
 
       results.push(result);
+      index++;
     }
 
     return results;
