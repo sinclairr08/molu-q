@@ -27,6 +27,7 @@ interface IQuizInputForm {
 interface IQuizRequest extends IQuizInputForm {
   imagePath?: string;
   audioPath?: string;
+  audiosPath?: string;
 }
 
 const uploadApi = async (
