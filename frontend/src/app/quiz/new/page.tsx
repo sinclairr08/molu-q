@@ -80,7 +80,7 @@ const QuizAddPage: React.FC = () => {
     }
 
     const image = data.image[0];
-    const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_image.${getSuffix(image.name)}`;
+    const fn = `quiz_${data.quizSetId}_${data.problemId}_image.${getSuffix(image.name)}`;
     const result = await uploadApi(image, fn, "image");
 
     return result;
@@ -92,7 +92,7 @@ const QuizAddPage: React.FC = () => {
     }
 
     const audio = data.audio[0];
-    const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_audio.${getSuffix(audio.name)}`;
+    const fn = `quiz_${data.quizSetId}_${data.problemId}_audio.${getSuffix(audio.name)}`;
     const result = await uploadApi(audio, fn, "audio");
 
     return result;
@@ -109,7 +109,7 @@ const QuizAddPage: React.FC = () => {
     let index = 0;
 
     for (const audio of audios) {
-      const fn = `quiz_${Number(data.quizSetId || 0)}_${data.problemId}_audio${index}.${getSuffix(audio.name)}`;
+      const fn = `quiz_${data.quizSetId}_${data.problemId}_audio${index}.${getSuffix(audio.name)}`;
       const result = await uploadApi(audio, fn, "audio");
 
       if (!result) {
@@ -138,7 +138,7 @@ const QuizAddPage: React.FC = () => {
   };
 
   const isValid = async (data: IQuizInputForm) => {
-    if (!data.problemId || !data.question || !data.answer) {
+    if (!data.quizSetId || !data.problemId || !data.question || !data.answer) {
       return;
     }
 
