@@ -21,7 +21,6 @@ class QuizResponse(BaseModel):
     question: str
     imagePath: Optional[str]
     audioPath: Optional[str]
-    audiosPath: Optional[str]
     selectList: Optional[list[str]]
 
 
@@ -68,5 +67,10 @@ def get_answer_by_set_problem_id(set_id: int, problem_id: int):
 
 @router.post("")
 def add_quiz(quiz: QuizRequest):
-    create_quiz(quiz.model_dump(exclude_none=True))
+    quiz_ = quiz.model_dump(exclude_none=True)
+
+    if "audiosPath" in quiz_.keys():
+        quiz_["selectList"] = quiz_["audiosPath"]
+
+    create_quiz(quiz_)
     return JSONResponse(content=f"quiz {quiz.problemId} added successfully")
