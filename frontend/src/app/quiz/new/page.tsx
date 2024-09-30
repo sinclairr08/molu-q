@@ -54,6 +54,21 @@ const uploadApi = async (
   }
 };
 
+const uploadFile = async (
+  file: File,
+  data: IQuizRequest,
+  type: "image" | "audio",
+  index?: number
+): Promise<string> => {
+  const suffix = getSuffix(file.name);
+  const fn =
+    index === undefined
+      ? `quiz_${data.quizSetId}_${data.problemId}_${type}.${suffix}`
+      : `quiz_${data.quizSetId}_${data.problemId}_${type}${index}.${suffix}`;
+
+  return await uploadApi(file, fn, type);
+};
+
 const getSuffix = (filename: string): string => {
   const suffix = filename.split(".").pop();
   return suffix || "";
@@ -80,11 +95,7 @@ const QuizAddPage: React.FC = () => {
       return "";
     }
 
-    const image = data.image[0];
-    const fn = `quiz_${data.quizSetId}_${data.problemId}_image.${getSuffix(image.name)}`;
-    const result = await uploadApi(image, fn, "image");
-
-    return result;
+    return uploadFile(data.image[0], data, "image");
   };
 
   const uploadAudio = async (data: IQuizRequest): Promise<string> => {
@@ -92,11 +103,7 @@ const QuizAddPage: React.FC = () => {
       return "";
     }
 
-    const audio = data.audio[0];
-    const fn = `quiz_${data.quizSetId}_${data.problemId}_audio.${getSuffix(audio.name)}`;
-    const result = await uploadApi(audio, fn, "audio");
-
-    return result;
+    return uploadFile(data.audio[0], data, "audio");
   };
 
   const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
@@ -105,23 +112,12 @@ const QuizAddPage: React.FC = () => {
     }
 
     const audios = Array.from(data.audios);
-    const results: string[] = [];
+    const uploadedResult = audios.map((audio, index) =>
+      uploadFile(audio, data, "audio", index)
+    );
 
-    let index = 0;
-
-    for (const audio of audios) {
-      const fn = `quiz_${data.quizSetId}_${data.problemId}_audio${index}.${getSuffix(audio.name)}`;
-      const result = await uploadApi(audio, fn, "audio");
-
-      if (!result) {
-        return [];
-      }
-
-      results.push(result);
-      index++;
-    }
-
-    return results;
+    const results = await Promise.all(uploadedResult);
+    return results.some((result) => !result) ? [] : results;
   };
 
   const uploadQuiz = async (data: IQuizRequest) => {
