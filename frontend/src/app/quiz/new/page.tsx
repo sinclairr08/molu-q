@@ -27,7 +27,7 @@ interface IQuizInputForm {
 interface IQuizRequest extends IQuizInputForm {
   imagePath?: string;
   audioPath?: string;
-  audiosPath?: string;
+  audiosPath?: string[];
 }
 
 const uploadApi = async (
@@ -74,6 +74,30 @@ const getSuffix = (filename: string): string => {
   return suffix || "";
 };
 
+const uploadMedia = async (
+  data: IQuizRequest,
+  type: "image" | "audio"
+): Promise<string> => {
+  const file = data[type]?.[0];
+  if (!file) return "";
+
+  return await uploadFile(file, data, type);
+};
+
+const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
+  if (!data.audios) {
+    return [];
+  }
+
+  const audios = Array.from(data.audios);
+  const uploadedResult = audios.map((audio, index) =>
+    uploadFile(audio, data, "audio", index)
+  );
+
+  const results = await Promise.all(uploadedResult);
+  return results.some((result) => !result) ? [] : results;
+};
+
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
   const [selectItems, setSelectItems] = useState<string[]>();
@@ -89,36 +113,6 @@ const QuizAddPage: React.FC = () => {
   };
 
   const currentProblemType = watch("problemType");
-
-  const uploadImage = async (data: IQuizRequest): Promise<string> => {
-    if (!data.image || data.image.length === 0) {
-      return "";
-    }
-
-    return uploadFile(data.image[0], data, "image");
-  };
-
-  const uploadAudio = async (data: IQuizRequest): Promise<string> => {
-    if (!data.audio || data.audio.length === 0) {
-      return "";
-    }
-
-    return uploadFile(data.audio[0], data, "audio");
-  };
-
-  const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
-    if (!data.audios) {
-      return [];
-    }
-
-    const audios = Array.from(data.audios);
-    const uploadedResult = audios.map((audio, index) =>
-      uploadFile(audio, data, "audio", index)
-    );
-
-    const results = await Promise.all(uploadedResult);
-    return results.some((result) => !result) ? [] : results;
-  };
 
   const uploadQuiz = async (data: IQuizRequest) => {
     try {
@@ -139,27 +133,18 @@ const QuizAddPage: React.FC = () => {
       return;
     }
 
-    let imagePath = "";
-    if (data.image && data.image.length > 0) {
-      imagePath = await uploadImage(data);
-    }
-
-    let audioPath = "";
-    if (data.audio && data.audio.length > 0) {
-      audioPath = await uploadAudio(data);
-    }
-
-    let audiosPath: any = [];
-    if (data.audios && data.audios.length > 0) {
-      audiosPath = await uploadAudios(data);
-    }
+    const [imagePath, audioPath, audiosPath] = await Promise.all([
+      uploadMedia(data, "image"),
+      uploadMedia(data, "audio"),
+      uploadAudios(data)
+    ]);
 
     const updatedData = {
       ...data,
       quizSetId: data.quizSetId ? Number(data.quizSetId) : 0,
-      ...(imagePath !== "" && { imagePath }),
-      ...(audioPath !== "" && { audioPath }),
-      ...(audiosPath.length !== 0 && { audiosPath })
+      ...(imagePath && { imagePath }),
+      ...(audioPath && { audioPath }),
+      ...(audiosPath.length > 0 && { audiosPath })
     };
 
     await uploadQuiz(updatedData);
