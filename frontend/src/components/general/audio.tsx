@@ -14,7 +14,7 @@ export const Audio = ({ audioPath }: AudioProps) => {
   );
 };
 
-export const AudioIcon = () => {
+export const AudioIcon = ({ size = 48 }: { size?: number }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ export const AudioIcon = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="w-48 h-48 text-cyan-600 cursor-pointer"
+      className={`w-${size} h-${size} text-cyan-600 cursor-pointer`}
     >
       <path
         strokeLinecap="round"
