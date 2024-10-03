@@ -193,7 +193,8 @@ const QuizAddPage: React.FC = () => {
         ) : currentProblemType === "musicSelect" ? (
           <AudioFilesInputRow
             register={register("audios")}
-            label="음악 객관식 (중복 선택 가능)"
+            label="객관식 음악 (여러개 선택)"
+            textSize="xs"
           />
         ) : (
           <></>

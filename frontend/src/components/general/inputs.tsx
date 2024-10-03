@@ -5,6 +5,7 @@ import { AudioIcon } from "./audio";
 interface IShortInputRow {
   register: UseFormRegisterReturn<any>;
   label: string;
+  textSize?: string;
 }
 
 interface ISelectBoxRow {
@@ -26,7 +27,7 @@ export const FileInputRow = ({ register, label }: IShortInputRow) => {
   return (
     <label className="flex items-center">
       <span className="px-2 w-24">{label}</span>
-      <label htmlFor="file-upload" className="w-48">
+      <label htmlFor="file-upload" className="w-48 pl-12">
         <input id="file-upload" type="file" {...register} className="sr-only" />
         <ImageIcon size={24} />
       </label>
@@ -38,7 +39,7 @@ export const AudioFileInputRow = ({ register, label }: IShortInputRow) => {
   return (
     <label className="flex items-center">
       <span className="px-2 w-24">{label}</span>
-      <label htmlFor="file-upload" className="w-48">
+      <label htmlFor="file-upload" className="w-48 pl-12">
         <input id="file-upload" type="file" {...register} className="sr-only" />
         <AudioIcon size={24} />
       </label>
@@ -46,11 +47,15 @@ export const AudioFileInputRow = ({ register, label }: IShortInputRow) => {
   );
 };
 
-export const AudioFilesInputRow = ({ register, label }: IShortInputRow) => {
+export const AudioFilesInputRow = ({
+  register,
+  label,
+  textSize
+}: IShortInputRow) => {
   return (
     <label className="flex items-center">
-      <span className="px-2 w-24">{label}</span>
-      <label htmlFor="file-upload2" className="w-48">
+      <span className={`px-2 w-24 text-${textSize}`}>{label}</span>
+      <label htmlFor="file-upload2" className="w-48 pl-12">
         <input
           id="file-upload2"
           type="file"
