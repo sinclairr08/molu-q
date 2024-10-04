@@ -4,8 +4,8 @@ import { SubmitButton } from "@/components/general/general";
 import {
   AudioFileInputRow,
   AudioFilesInputRow,
-  FileInputRow,
-  SelectBoxRow,
+  ImageFileInputRow,
+  SelectInputRow,
   ShortInputRow
 } from "@/components/general/inputs";
 import axios from "axios";
@@ -155,7 +155,7 @@ const QuizAddPage: React.FC = () => {
       <div className="flex flex-col items-center space-y-3 pb-8 mx-12">
         <ShortInputRow register={register("quizSetId")} label="세트 번호" />
         <ShortInputRow register={register("problemId")} label="문제 번호" />
-        <SelectBoxRow
+        <SelectInputRow
           register={register("problemType")}
           label="문제 타입"
           itemList={["short", "select", "musicSelect"]}
@@ -163,7 +163,7 @@ const QuizAddPage: React.FC = () => {
 
         <ShortInputRow register={register("question")} label="문제" />
         <AudioFileInputRow register={register("audio")} label="음악" />
-        <FileInputRow register={register("image")} label="이미지" />
+        <ImageFileInputRow register={register("image")} label="이미지" />
 
         {currentProblemType && currentProblemType === "select" ? (
           <>
