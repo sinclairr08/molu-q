@@ -1,22 +1,6 @@
 import Link from "next/link";
 import { UseFormRegisterReturn } from "react-hook-form";
 
-interface ImageProps {
-  imagePath?: string;
-  size?: number;
-}
-
-export const Image = ({ imagePath, size }: ImageProps) => {
-  if (!imagePath) {
-    return null;
-  }
-  return (
-    <div className="flex justify-center">
-      <img src={imagePath} className={size ? `w-${size} h-${size}` : ""} />
-    </div>
-  );
-};
-
 export const SubmitButton = () => {
   return (
     <div className="flex justify-center">

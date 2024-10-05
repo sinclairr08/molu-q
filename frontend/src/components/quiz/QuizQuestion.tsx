@@ -1,4 +1,4 @@
-import { Image } from "@/components/general/general";
+import { Image } from "@/components/general/image";
 import { Audio } from "@/components/general/audio";
 import { IQuiz } from "./Quiz";
 
