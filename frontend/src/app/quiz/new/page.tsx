@@ -8,7 +8,7 @@ import {
   SelectInputRow,
   ShortInputRow
 } from "@/components/general/inputs";
-import { uploadData, uploadFile } from "@/lib/upload";
+import { uploadData, uploadFile, uploadFiles } from "@/lib/upload";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -29,20 +29,6 @@ interface IQuizRequest extends IQuizInputForm {
   audioPath?: string;
   audiosPath?: string[];
 }
-
-const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
-  if (!data.audios) {
-    return [];
-  }
-
-  const audios = Array.from(data.audios);
-  const uploadedResult = audios.map((audio, index) =>
-    uploadFile<IQuizRequest>(data, "audio", "quiz", index)
-  );
-
-  const results = await Promise.all(uploadedResult);
-  return results.some((result) => !result) ? [] : results;
-};
 
 const QuizAddPage: React.FC = () => {
   const { register, handleSubmit, watch, reset } = useForm<IQuizInputForm>();
@@ -68,7 +54,7 @@ const QuizAddPage: React.FC = () => {
     const [imagePath, audioPath, audiosPath] = await Promise.all([
       uploadFile<IQuizRequest>(data, "image", "quiz"),
       uploadFile<IQuizRequest>(data, "audio", "quiz"),
-      uploadAudios(data)
+      uploadFiles<IQuizRequest>(data, "audios", "quiz")
     ]);
 
     const updatedData = {

@@ -6,6 +6,8 @@ interface IAPIData {
   code?: number;
   image?: FileList;
   audio?: FileList;
+  images?: FileList;
+  audios?: FileList;
 }
 
 export const uploadApi = async (
@@ -35,26 +37,29 @@ export const uploadApi = async (
 export const uploadFile = async <T extends IAPIData>(
   data: T,
   type: "image" | "audio",
-  domain: "quiz" | "http",
-  index?: number
+  domain: "quiz" | "http"
 ): Promise<string> => {
   const file = data[type]?.[0];
   if (!file) return "";
-  const suffix = getSuffix(file.name);
-  const prefix =
-    domain === "quiz"
-      ? `quiz_${data.quizSetId}_${data.problemId}_${type}`
-      : `http_${data.code}`;
 
-  const postfix = index ?? "";
-  const fileName = prefix + postfix + "." + suffix;
-
-  return await uploadApi(file, fileName, type);
+  return await uploadApi(file, makeFileName(data, file, domain, type), type);
 };
 
-export const getSuffix = (filename: string): string => {
-  const suffix = filename.split(".").pop();
-  return suffix || "";
+export const uploadFiles = async <T extends IAPIData>(
+  data: T,
+  type: "images" | "audios",
+  domain: "quiz" | "http"
+): Promise<string[]> => {
+  const files = data[type];
+  if (!files) return [];
+
+  const fileArrays = Array.from(files);
+  const uploadedResult = fileArrays.map((file, index) =>
+    uploadApi(file, makeFileName(data, file, domain, type, index), "audio")
+  );
+
+  const results = await Promise.all(uploadedResult);
+  return results.some((result) => !result) ? [] : results;
 };
 
 export const uploadData = async <T>(data: T, url: string) => {
@@ -67,4 +72,21 @@ export const uploadData = async <T>(data: T, url: string) => {
   } catch (error) {
     console.error(`${error} occurred`);
   }
+};
+
+const makeFileName = <T extends IAPIData>(
+  data: T,
+  file: File,
+  domain: "quiz" | "http",
+  type: string,
+  index?: number
+) => {
+  const suffix = file.name.split(".").pop() || "";
+  const prefix =
+    domain === "quiz"
+      ? `quiz_${data.quizSetId}_${data.problemId}_${type}`
+      : `http_${data.code}`;
+  const postfix = index ?? "";
+
+  return `${prefix}_${postfix}.${suffix}`;
 };
