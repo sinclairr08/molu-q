@@ -8,8 +8,7 @@ import {
   SelectInputRow,
   ShortInputRow
 } from "@/components/general/inputs";
-import { uploadFile, uploadMedia } from "@/lib/upload";
-import axios from "axios";
+import { uploadData, uploadFile } from "@/lib/upload";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -38,7 +37,7 @@ const uploadAudios = async (data: IQuizRequest): Promise<string[]> => {
 
   const audios = Array.from(data.audios);
   const uploadedResult = audios.map((audio, index) =>
-    uploadFile(audio, data, "audio", index)
+    uploadFile<IQuizRequest>(data, "audio", "quiz", index)
   );
 
   const results = await Promise.all(uploadedResult);
@@ -61,28 +60,14 @@ const QuizAddPage: React.FC = () => {
 
   const currentProblemType = watch("problemType");
 
-  const uploadQuiz = async (data: IQuizRequest) => {
-    try {
-      axios.post("/api/v0/quiz", data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      reset();
-    } catch (error) {
-      console.error(`${error} occurred`);
-    }
-  };
-
   const isValid = async (data: IQuizInputForm) => {
     if (!data.quizSetId || !data.problemId || !data.question || !data.answer) {
       return;
     }
 
     const [imagePath, audioPath, audiosPath] = await Promise.all([
-      uploadMedia(data, "image"),
-      uploadMedia(data, "audio"),
+      uploadFile<IQuizRequest>(data, "image", "quiz"),
+      uploadFile<IQuizRequest>(data, "audio", "quiz"),
       uploadAudios(data)
     ]);
 
@@ -94,7 +79,8 @@ const QuizAddPage: React.FC = () => {
       ...(audiosPath.length > 0 && { audiosPath })
     };
 
-    await uploadQuiz(updatedData);
+    await uploadData<IQuizRequest>(updatedData, "/api/v0/quiz");
+    reset();
   };
 
   return (

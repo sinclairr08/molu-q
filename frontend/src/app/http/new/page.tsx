@@ -2,8 +2,7 @@
 
 import { SubmitButton } from "@/components/general/general";
 import { ImageFileInputRow, ShortInputRow } from "@/components/general/inputs";
-import { uploadMedia } from "@/lib/upload";
-import axios from "axios";
+import { uploadData, uploadFile } from "@/lib/upload";
 import { useForm } from "react-hook-form";
 
 export interface IHttpInputForm {
@@ -20,20 +19,6 @@ interface IHttpRequest extends IHttpInputForm {
 const HttpAddPage: React.FC = () => {
   const { register, handleSubmit, reset } = useForm<IHttpInputForm>();
 
-  const uploadHttp = async (data: IHttpRequest) => {
-    try {
-      axios.post("/api/v0/http", data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      reset();
-    } catch (error) {
-      console.error(`${error} occurred`);
-    }
-  };
-
   const isValid = async (data: IHttpInputForm) => {
     if (
       !data.code ||
@@ -45,13 +30,14 @@ const HttpAddPage: React.FC = () => {
       return;
     }
 
-    const imagePath = await uploadMedia(data, "image");
+    const imagePath = await uploadFile<IHttpRequest>(data, "image", "http");
     const updatedData = {
       ...data,
       ...(imagePath && { imagePath })
     };
 
-    await uploadHttp(updatedData);
+    await uploadData<IHttpRequest>(updatedData, "/api/v0/http");
+    reset();
   };
   return (
     <form onSubmit={handleSubmit(isValid)}>
