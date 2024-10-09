@@ -10,7 +10,11 @@ interface IAPIData {
   audios?: FileList;
 }
 
-export const uploadApi = async (
+const FILE_UPLOAD_API_ENDPOINT = "/api/v0/upload";
+const FORM_CONTENT_TYPE = { "Content-Type": "multipart/form-data" };
+const JSON_CONTENT_TYPE = { "Content-Type": "application/json" };
+
+const uploadFileApi = async (
   file: File,
   fileName: string,
   type: "image" | "audio"
@@ -21,11 +25,13 @@ export const uploadApi = async (
   formData.append(`${type}Id`, fileName);
 
   try {
-    const { data } = await axios.post(`/api/v0/upload/${type}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
+    const { data } = await axios.post(
+      `${FILE_UPLOAD_API_ENDPOINT}/${type}`,
+      formData,
+      {
+        headers: FORM_CONTENT_TYPE
       }
-    });
+    );
 
     return data?.filePath || "";
   } catch (error) {
@@ -42,7 +48,11 @@ export const uploadFile = async <T extends IAPIData>(
   const file = data[type]?.[0];
   if (!file) return "";
 
-  return await uploadApi(file, makeFileName(data, file, domain, type), type);
+  return await uploadFileApi(
+    file,
+    makeFileName(data, file, domain, type),
+    type
+  );
 };
 
 export const uploadFiles = async <T extends IAPIData>(
@@ -53,9 +63,12 @@ export const uploadFiles = async <T extends IAPIData>(
   const files = data[type];
   if (!files) return [];
 
-  const fileArrays = Array.from(files);
-  const uploadedResult = fileArrays.map((file, index) =>
-    uploadApi(file, makeFileName(data, file, domain, type, index), "audio")
+  const uploadedResult = Array.from(files).map((file, index) =>
+    uploadFileApi(
+      file,
+      makeFileName(data, file, domain, type, index),
+      type.slice(0, -1) as "image" | "audio"
+    )
   );
 
   const results = await Promise.all(uploadedResult);
@@ -64,11 +77,7 @@ export const uploadFiles = async <T extends IAPIData>(
 
 export const uploadData = async <T>(data: T, url: string) => {
   try {
-    axios.post(url, data, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    await axios.post(url, data, { headers: JSON_CONTENT_TYPE });
   } catch (error) {
     console.error(`${error} occurred`);
   }
