@@ -38,9 +38,6 @@ next-env.d.ts
 # Local development
 local/
 
-# Mock Data Files
-/frontend/public/
-
 # python cache
 __pycache__/
 
@@ -49,3 +46,4 @@ __pycache__/
 
 # temporary image files
 backend/images
+backend/audios

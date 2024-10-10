@@ -1,5 +1,5 @@
 import { UseFormRegister } from "react-hook-form";
-import { Audio } from "../general/general";
+import { Audio } from "../general/audio";
 
 interface ISelectItem {
   index: number;
@@ -38,7 +38,7 @@ export default function SelectItem(data: ISelectItem) {
           value={String(index + 1)}
           {...register("answer")}
         />
-        {isMusic ? <Audio path={selectItem} /> : selectItem}
+        {isMusic ? <Audio audioPath={selectItem} /> : selectItem}
       </label>
     </div>
   );

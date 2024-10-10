@@ -9,7 +9,7 @@ export interface IQuiz {
   problemUid: number;
   problemType: string;
   question: string;
-  musicPath?: string;
+  audioPath?: string;
   imagePath?: string;
   selectList?: string[];
 }

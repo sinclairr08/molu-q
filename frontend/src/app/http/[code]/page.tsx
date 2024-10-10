@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import useSWR from "swr";
-import { Image } from "@/components/general/general";
+import { Image } from "@/components/general/image";
 
 const fetcher = (url: string) => axios.get<IHttp>(url).then((res) => res.data);
 
