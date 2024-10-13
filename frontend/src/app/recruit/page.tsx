@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const RecruitPage: React.FC = () => {
   const [cards, setCards] = useState<any[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const recruitTypes = ["상시", "픽업"];
 
-  useEffect(() => {
+  const doRecruit = () => {
     setCards(
       Array.from({ length: 10 }, () => Math.floor(Math.random() * 3) + 1)
     );
-  }, []);
+  };
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
@@ -36,6 +36,15 @@ const RecruitPage: React.FC = () => {
             {"★".repeat(card)}
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-center space-x-4">
+        <button
+          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+          onClick={doRecruit}
+        >
+          모집 하기
+        </button>
       </div>
     </div>
   );
