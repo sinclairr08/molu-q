@@ -2,15 +2,44 @@
 
 import { useState } from "react";
 
+interface IRecruit {
+  name: string;
+  star: number;
+  prob: number;
+}
+
+const mockData: IRecruit[] = [
+  { name: "요시미", star: 1, prob: 0.785 },
+  { name: "아이리", star: 2, prob: 0.97 },
+  { name: "나츠", star: 3, prob: 1.0 }
+];
+
+const recruitFromData = (data: IRecruit[]) => {
+  const result = [];
+  for (let i = 0; i < 10; i++) {
+    const curProb = Math.random();
+    let idx = 0;
+    while (curProb > data[idx].prob) {
+      idx++;
+    }
+    result.push(data[idx]);
+  }
+  return result;
+};
+
 const RecruitPage: React.FC = () => {
-  const [cards, setCards] = useState<any[]>([]);
+  const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const recruitTypes = ["상시", "픽업"];
 
   const doRecruit = () => {
-    setCards(
-      Array.from({ length: 10 }, () => Math.floor(Math.random() * 3) + 1)
-    );
+    setCards(recruitFromData(mockData));
+  };
+
+  const getCardStyle = (star: number) => {
+    if (star === 1) return "bg-blue-300";
+    if (star === 2) return "bg-yellow-300";
+    else return "bg-purple-300";
   };
 
   return (
@@ -31,9 +60,9 @@ const RecruitPage: React.FC = () => {
         {cards.map((card, i) => (
           <div
             key={i}
-            className="text-center text-xs m-2 border-gray-400 border-2"
+            className={`text-center text-xs m-2 border-gray-400 p-2 ${getCardStyle(card.star)}`}
           >
-            {"★".repeat(card)}
+            <span>{card.name}</span>
           </div>
         ))}
       </div>
