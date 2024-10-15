@@ -27,19 +27,21 @@ const recruitFromData = (data: IRecruit[]) => {
   return result;
 };
 
+const getCardStyle = (star: number) => {
+  if (star === 1) return "bg-blue-300";
+  if (star === 2) return "bg-yellow-300";
+  else return "bg-purple-300";
+};
+
 const RecruitPage: React.FC = () => {
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
+  const [recruitPoint, setRecruitPoint] = useState(0);
   const recruitTypes = ["상시", "픽업"];
 
   const doRecruit = () => {
     setCards(recruitFromData(mockData));
-  };
-
-  const getCardStyle = (star: number) => {
-    if (star === 1) return "bg-blue-300";
-    if (star === 2) return "bg-yellow-300";
-    else return "bg-purple-300";
+    setRecruitPoint((prev) => prev + 10);
   };
 
   return (
@@ -75,6 +77,7 @@ const RecruitPage: React.FC = () => {
           모집 하기
         </button>
       </div>
+      <div>모집 포인트: {recruitPoint}</div>
     </div>
   );
 };
