@@ -1,18 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 interface IRecruit {
   name: string;
   star: number;
   prob: number;
 }
-
-const mockData: IRecruit[] = [
-  { name: "요시미", star: 1, prob: 0.785 },
-  { name: "아이리", star: 2, prob: 0.97 },
-  { name: "나츠", star: 3, prob: 1.0 }
-];
 
 const recruitFromData = (data: IRecruit[]) => {
   const result = [];
@@ -37,10 +32,24 @@ const RecruitPage: React.FC = () => {
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [recruitPoint, setRecruitPoint] = useState(0);
+  const [cardProbs, setCardProbs] = useState<IRecruit[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("/api/v0/recruit");
+        setCardProbs(data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const recruitTypes = ["상시", "픽업"];
 
   const doRecruit = () => {
-    setCards(recruitFromData(mockData));
+    setCards(recruitFromData(cardProbs));
     setRecruitPoint((prev) => prev + 10);
   };
 

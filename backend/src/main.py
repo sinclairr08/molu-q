@@ -4,11 +4,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from src.routers import http, quiz
+from src.routers import http, quiz, recruit
 
 app = FastAPI()
 app.include_router(quiz.router)
 app.include_router(http.router)
+app.include_router(recruit.router)
 
 load_dotenv()
 IMAGE_SERVER_URL = os.getenv("IMAGE_SERVER_URL")
