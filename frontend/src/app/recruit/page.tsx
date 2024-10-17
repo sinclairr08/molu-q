@@ -53,6 +53,27 @@ const RecruitPage: React.FC = () => {
     setRecruitPoint((prev) => prev + 10);
   };
 
+  const resetRecruit = () => {
+    setCards([]);
+    setRecruitPoint(0);
+  };
+
+  const repeatRecruit = () => {
+    recruitLoop(0);
+  };
+
+  const recruitLoop = (currentPoint: number) => {
+    const newCards = recruitFromData(cardProbs);
+    const newPoint = currentPoint + 10;
+
+    setCards(newCards);
+    setRecruitPoint(newPoint);
+
+    if (newCards.every((card) => card.star !== 3) && newPoint < 200) {
+      setTimeout(() => recruitLoop(newPoint), 100);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
       <div className="flex space-x-4">
@@ -84,6 +105,18 @@ const RecruitPage: React.FC = () => {
           onClick={doRecruit}
         >
           모집 하기
+        </button>
+        <button
+          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+          onClick={repeatRecruit}
+        >
+          뽑을 때 까지 모집 하기
+        </button>
+        <button
+          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+          onClick={resetRecruit}
+        >
+          초기화
         </button>
       </div>
       <div>모집 포인트: {recruitPoint}</div>

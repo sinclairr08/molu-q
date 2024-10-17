@@ -15,7 +15,7 @@ class RecruitResponse(BaseModel):
 async def get_recruit():
     data = [
         {"name": "요시미", "star": 1, "prob": 0.785},
-        {"name": "아이리", "star": 2, "prob": 0.97},
+        {"name": "아이리", "star": 2, "prob": 0.993},
         {"name": "나츠", "star": 3, "prob": 1.0},
     ]
     return JSONResponse(content=data)
