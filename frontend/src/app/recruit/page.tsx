@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface IRecruit {
   name: string;
@@ -28,23 +29,21 @@ const getCardStyle = (star: number) => {
   else return "bg-purple-300";
 };
 
+const fetcher = (url: string) =>
+  axios.get<IRecruit[]>(url).then((res) => res.data);
+
 const RecruitPage: React.FC = () => {
+  const { data } = useSWR<IRecruit[]>(`/api/v0/recruit`, fetcher);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [recruitPoint, setRecruitPoint] = useState(0);
   const [cardProbs, setCardProbs] = useState<IRecruit[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get("/api/v0/recruit");
-        setCardProbs(data);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (data) {
+      setCardProbs(data);
+    }
+  }, [data]);
 
   const recruitTypes = ["상시", "픽업"];
 
