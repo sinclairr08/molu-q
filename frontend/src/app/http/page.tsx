@@ -2,10 +2,8 @@
 
 import { AddButtonLink } from "@/components/general/general";
 import { Image } from "@/components/general/image";
-import axios from "axios";
+import { useFetchData } from "@/lib/fetch";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
 
 export interface IHttp {
   code: number;
@@ -13,9 +11,6 @@ export interface IHttp {
   imagePath: string;
   description?: string;
 }
-
-const fetcher = (url: string) =>
-  axios.get<IHttp[]>(url).then((res) => res.data);
 
 const HttpCard = (cardProps: IHttp) => {
   return (
@@ -36,14 +31,7 @@ const HttpCard = (cardProps: IHttp) => {
 };
 
 const HttpPage: React.FC = () => {
-  const [httpItems, setHttpItems] = useState<IHttp[]>([]);
-  const { data } = useSWR<IHttp[]>(`/api/v0/http`, fetcher);
-
-  useEffect(() => {
-    if (data) {
-      setHttpItems(data);
-    }
-  }, [data]);
+  const httpItems = useFetchData<IHttp[]>(`/api/v0/http`, []);
 
   return (
     <>
