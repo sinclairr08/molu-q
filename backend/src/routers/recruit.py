@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from src.repository.recruit import read_recruit_probability
 
 router = APIRouter(prefix="/v0/recruit")
 
@@ -13,9 +14,5 @@ class RecruitResponse(BaseModel):
 
 @router.get("", response_model=list[RecruitResponse])
 async def get_recruit():
-    data = [
-        {"name": "요시미", "star": 1, "prob": 0.785},
-        {"name": "아이리", "star": 2, "prob": 0.993},
-        {"name": "나츠", "star": 3, "prob": 1.0},
-    ]
+    data = read_recruit_probability()
     return JSONResponse(content=data)
