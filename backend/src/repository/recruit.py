@@ -37,3 +37,44 @@ def read_recruit_probability():
         results.append(result)
 
     return results
+
+
+def read_pickup_probability(name):
+    collection = db["students"]
+    star1_p = 0.785
+    star2_p = 0.185
+    star3_nop = 0.023
+
+    star1_list = list(collection.find({"star": 1}, {"_id": 0}))
+    star2_list = list(collection.find({"star": 2}, {"_id": 0}))
+    star3_nop_list = list(
+        collection.find({"star": 3, "name": {"$ne": name}}, {"_id": 0})
+    )
+    pickup = collection.find_one({"name": name}, {"_id": 0})
+
+    l1 = len(star1_list)
+    l2 = len(star2_list)
+    l3 = len(star3_nop_list)
+
+    results = []
+
+    for i, s1 in enumerate(star1_list):
+        result = dict(s1)
+        result["prob"] = ((i + 1) / l1) * star1_p
+        results.append(result)
+
+    for i, s2 in enumerate(star2_list):
+        result = dict(s2)
+        result["prob"] = ((i + 1) / l2) * star2_p + star1_p
+        results.append(result)
+
+    for i, s3 in enumerate(star3_nop_list):
+        result = dict(s3)
+        result["prob"] = ((i + 1) / l3) * star3_nop + star1_p + star2_p
+
+        results.append(result)
+
+    pickup["prob"] = 1
+    results.append(pickup)
+
+    return results
