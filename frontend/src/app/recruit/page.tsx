@@ -29,14 +29,29 @@ const getCardStyle = (star: number) => {
 };
 
 const RecruitPage: React.FC = () => {
-  const cardProbs = useFetchData<IRecruit[]>("/api/v0/recruit", []);
+  const [cardProbs, setCardProbs] = useState<IRecruit[]>([]);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [recruitPoint, setRecruitPoint] = useState(0);
 
   const recruitTypes = ["상시", "픽업"];
+  const pickUpCharacter = "마리(아이돌)";
+
+  const normalProbs = useFetchData<IRecruit[]>("/api/v0/recruit", []);
+  const pickUpProbs = useFetchData<IRecruit[]>(
+    `/api/v0/recruit/pickup/${pickUpCharacter}`,
+    []
+  );
+
+  const updateRecruitType = (recruitType: string) => {
+    setCurRecruitType(recruitType);
+    setCardProbs(recruitType === "픽업" ? pickUpProbs : normalProbs);
+  };
 
   const doRecruit = () => {
+    if (cardProbs.length === 0) {
+      return;
+    }
     setCards(recruitFromData(cardProbs));
     setRecruitPoint((prev) => prev + 10);
   };
@@ -47,6 +62,9 @@ const RecruitPage: React.FC = () => {
   };
 
   const repeatRecruit = () => {
+    if (cardProbs.length === 0) {
+      return;
+    }
     recruitLoop(0);
   };
 
@@ -69,9 +87,11 @@ const RecruitPage: React.FC = () => {
           <button
             key={recruitType}
             className={`border-2 border-gray-400 p-2 rounded-md h-16 text-xs ${recruitType === curRecruitType ? "bg-yellow-200" : ""}`}
-            onClick={() => setCurRecruitType(recruitType)}
+            onClick={() => updateRecruitType(recruitType)}
           >
-            <div>{recruitType} 모집</div>
+            <div>
+              {recruitType === "픽업" && pickUpCharacter} {recruitType} 모집
+            </div>
           </button>
         ))}
       </div>
