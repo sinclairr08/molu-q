@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pymongo import MongoClient
 
 client = MongoClient("mongodb://localhost:27017")
@@ -52,4 +54,13 @@ def read_pickup_probability(name):
 
         cumul_probs += probs
 
+    return results
+
+
+def read_current_pickup():
+    collection = db["pickups"]
+    current_dt = datetime.now()
+
+    query = {"start_dt": {"$lte": current_dt}, "end_dt": {"$gt": current_dt}}
+    results = list(collection.find(query, {"name": 1, "_id": 0}))
     return results
