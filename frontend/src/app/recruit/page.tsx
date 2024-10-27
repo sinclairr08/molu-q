@@ -22,12 +22,6 @@ const recruitFromData = (data: IRecruit[]) => {
   return result;
 };
 
-const getCardStyle = (star: number) => {
-  if (star === 1) return "bg-blue-300";
-  if (star === 2) return "bg-yellow-300";
-  else return "bg-purple-300";
-};
-
 const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruit[]>([]);
   const [cards, setCards] = useState<IRecruit[]>([]);
@@ -100,8 +94,9 @@ const RecruitPage: React.FC = () => {
         {cards.map((card, i) => (
           <div
             key={i}
-            className={`text-center text-xs m-2 border-gray-400 p-2 ${getCardStyle(card.star)}`}
+            className={`text-center text-xs m-2 border-gray-400 p-2`}
           >
+            <img src={`/FX_TEX_GT_${card.star}.png`} className="w-12 h-12" />
             <span>{card.name}</span>
           </div>
         ))}
