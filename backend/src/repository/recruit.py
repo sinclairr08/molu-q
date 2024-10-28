@@ -6,9 +6,8 @@ client = MongoClient("mongodb://localhost:27017")
 db = client["molu-q"]
 
 
-def read_recruit_probability():
+def get_probability(star_probs):
     collection = db["students"]
-    star_probs = [(1, 0.785), (2, 0.185), (3, 0.03)]
 
     results = []
     cumul_probs = 0.0
@@ -27,9 +26,8 @@ def read_recruit_probability():
     return results
 
 
-def read_pickup_probability(name):
+def get_pickup_probability(star_probs, name):
     collection = db["students"]
-    star_probs = [(1, 0.785), (2, 0.185), (3, 0.023), (4, 0.007)]
 
     results = []
     cumul_probs = 0.0
@@ -55,6 +53,32 @@ def read_pickup_probability(name):
         cumul_probs += probs
 
     return results
+
+
+def read_recruit_probability():
+
+    normal_star_probs = [(1, 0.785), (2, 0.185), (3, 0.03)]
+    final_star_probs = [(2, 0.97), (3, 0.03)]
+
+    total_probs = {
+        "normal": get_probability(normal_star_probs),
+        "final": get_probability(final_star_probs),
+    }
+
+    return total_probs
+
+
+def read_pickup_probability(name):
+
+    normal_star_probs = [(1, 0.785), (2, 0.185), (3, 0.023), (4, 0.007)]
+    final_star_probs = [(2, 0.97), (3, 0.023), (4, 0.007)]
+
+    total_probs = {
+        "normal": get_pickup_probability(normal_star_probs, name),
+        "final": get_pickup_probability(final_star_probs, name),
+    }
+
+    return total_probs
 
 
 def read_current_pickup():

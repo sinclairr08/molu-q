@@ -16,17 +16,22 @@ class RecruitResponse(BaseModel):
     prob: float
 
 
+class RecruitResponses(BaseModel):
+    noraml: list[RecruitResponse]
+    final: list[RecruitResponse]
+
+
 class RecruitPickupResponse(BaseModel):
     name: str
 
 
-@router.get("", response_model=list[RecruitResponse])
+@router.get("", response_model=RecruitResponses)
 async def get_recruit():
     data = read_recruit_probability()
     return JSONResponse(content=data)
 
 
-@router.get("/pickup/{name}", response_model=list[RecruitResponse])
+@router.get("/pickup/{name}", response_model=RecruitResponses)
 async def get_pickup_recruit(name: str):
     data = read_pickup_probability(name)
     return JSONResponse(content=data)
