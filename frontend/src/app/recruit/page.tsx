@@ -9,21 +9,33 @@ interface IRecruit {
   prob: number;
 }
 
-const recruitFromData = (data: IRecruit[]) => {
+interface IRecruitAPIResponse {
+  normal: IRecruit[];
+  final: IRecruit[];
+}
+
+const recruitFromData = ({ normal, final }: IRecruitAPIResponse) => {
   const result = [];
+  const probs: IRecruit[][] = [...Array(9).fill(normal), final];
+
   for (let i = 0; i < 10; i++) {
     const curProb = Math.random();
     let idx = 0;
-    while (curProb > data[idx].prob) {
+    while (curProb > probs[i][idx].prob) {
       idx++;
     }
-    result.push(data[idx]);
+    result.push(probs[i][idx]);
   }
   return result;
 };
 
+const defaultState: IRecruitAPIResponse = {
+  normal: [],
+  final: []
+};
+
 const RecruitPage: React.FC = () => {
-  const [cardProbs, setCardProbs] = useState<IRecruit[]>([]);
+  const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [recruitPoint, setRecruitPoint] = useState(0);
@@ -31,10 +43,13 @@ const RecruitPage: React.FC = () => {
   const recruitTypes = ["상시", "픽업"];
   const pickUpCharacter = "마리(아이돌)";
 
-  const normalProbs = useFetchData<IRecruit[]>("/api/v0/recruit", []);
-  const pickUpProbs = useFetchData<IRecruit[]>(
+  const normalProbs = useFetchData<IRecruitAPIResponse>(
+    "/api/v0/recruit",
+    defaultState
+  );
+  const pickUpProbs = useFetchData<IRecruitAPIResponse>(
     `/api/v0/recruit/pickup/${pickUpCharacter}`,
-    []
+    defaultState
   );
 
   const updateRecruitType = (recruitType: string) => {
@@ -43,7 +58,7 @@ const RecruitPage: React.FC = () => {
   };
 
   const doRecruit = () => {
-    if (cardProbs.length === 0) {
+    if (cardProbs.normal.length === 0) {
       return;
     }
     setCards(recruitFromData(cardProbs));
@@ -56,7 +71,7 @@ const RecruitPage: React.FC = () => {
   };
 
   const repeatRecruit = () => {
-    if (cardProbs.length === 0) {
+    if (cardProbs.normal.length === 0) {
       return;
     }
     recruitLoop(0);
