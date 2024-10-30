@@ -6,44 +6,23 @@ client = MongoClient("mongodb://localhost:27017")
 db = client["molu-q"]
 
 
-def get_probability(star_probs):
+def get_students(star, name=None):
     collection = db["students"]
+    if star == 3 and name:
+        return list(collection.find({"star": 3, "name": {"$ne": name}}, {"_id": 0}))
+    elif star == 4 and name:
+        return list(collection.find({"name": name}, {"_id": 0}))
+    else:
+        return list(collection.find({"star": star}, {"_id": 0}))
 
+
+def get_probability(star_probs, name=None):
     results = []
     cumul_probs = 0.0
 
     for star, probs in star_probs:
-        student_list = list(collection.find({"star": star}, {"_id": 0}))
+        student_list = get_students(star, name)
         num_student = len(student_list)
-
-        for i, student in enumerate(student_list):
-            result = dict(student)
-            result["prob"] = ((i + 1) / num_student) * probs + cumul_probs
-            results.append(result)
-
-        cumul_probs += probs
-
-    return results
-
-
-def get_pickup_probability(star_probs, name):
-    collection = db["students"]
-
-    results = []
-    cumul_probs = 0.0
-
-    for star, probs in star_probs:
-        if star == 3:
-            student_list = list(
-                collection.find({"star": 3, "name": {"$ne": name}}, {"_id": 0})
-            )
-        elif star == 4:
-            student_list = list(collection.find({"name": name}, {"_id": 0}))
-        else:
-            student_list = list(collection.find({"star": star}, {"_id": 0}))
-        num_student = len(student_list)
-
-        print(student_list)
 
         for i, student in enumerate(student_list):
             result = dict(student)
@@ -74,8 +53,8 @@ def read_pickup_probability(name):
     final_star_probs = [(2, 0.97), (3, 0.023), (4, 0.007)]
 
     total_probs = {
-        "normal": get_pickup_probability(normal_star_probs, name),
-        "final": get_pickup_probability(final_star_probs, name),
+        "normal": get_probability(normal_star_probs, name),
+        "final": get_probability(final_star_probs, name),
     }
 
     return total_probs
