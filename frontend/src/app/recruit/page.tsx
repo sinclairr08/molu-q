@@ -38,6 +38,7 @@ const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
+  const [cur3Point, setCur3Point] = useState<number | null>(null);
   const [recruitPoint, setRecruitPoint] = useState(0);
 
   const recruitTypes = ["상시", "픽업"];
@@ -61,6 +62,7 @@ const RecruitPage: React.FC = () => {
     if (cardProbs.normal.length === 0) {
       return;
     }
+    setCur3Point(null);
     setCards(recruitFromData(cardProbs));
     setRecruitPoint((prev) => prev + 10);
   };
@@ -68,13 +70,23 @@ const RecruitPage: React.FC = () => {
   const resetRecruit = () => {
     setCards([]);
     setRecruitPoint(0);
+    setCur3Point(null);
   };
 
   const repeatRecruit = () => {
     if (cardProbs.normal.length === 0) {
       return;
     }
+    setCur3Point(null);
     recruitLoop(0);
+  };
+
+  const repeatTimesRecruit = (totalPoint: number) => {
+    if (cardProbs.normal.length === 0) {
+      return;
+    }
+    setCur3Point(0);
+    recruitTimesLoop(0, totalPoint);
   };
 
   const recruitLoop = (currentPoint: number) => {
@@ -85,6 +97,21 @@ const RecruitPage: React.FC = () => {
     setRecruitPoint(newPoint);
 
     if (newCards.every((card) => card.star !== 3) && newPoint < 200) {
+      setTimeout(() => recruitLoop(newPoint), 100);
+    }
+  };
+
+  const recruitTimesLoop = (currentPoint: number, totalPoint: number) => {
+    const newCards = recruitFromData(cardProbs);
+    const newPoint = currentPoint + 10;
+
+    setCards(newCards);
+    setRecruitPoint(newPoint);
+
+    const count = newCards.filter((card) => card.star === 3).length;
+    setCur3Point((prev) => (prev ? prev + count : count));
+
+    if (newPoint < totalPoint) {
       setTimeout(() => recruitLoop(newPoint), 100);
     }
   };
@@ -132,12 +159,19 @@ const RecruitPage: React.FC = () => {
         </button>
         <button
           className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+          onClick={() => repeatTimesRecruit(200)}
+        >
+          200연 모집 하기
+        </button>
+        <button
+          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
           onClick={resetRecruit}
         >
           초기화
         </button>
       </div>
       <div>모집 포인트: {recruitPoint}</div>
+      {cur3Point && <div>획득한 3성의 갯수: {cur3Point}</div>}
     </div>
   );
 };
