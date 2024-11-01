@@ -34,6 +34,15 @@ const defaultState: IRecruitAPIResponse = {
   final: []
 };
 
+const RecruitButton = ({ label, onClick }: { label: string; onClick: any }) => (
+  <button
+    className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+    onClick={onClick}
+  >
+    {label}
+  </button>
+);
+
 const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
@@ -145,30 +154,13 @@ const RecruitPage: React.FC = () => {
       </div>
 
       <div className="flex justify-center space-x-4">
-        <button
-          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
-          onClick={doRecruit}
-        >
-          모집 하기
-        </button>
-        <button
-          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
-          onClick={repeatRecruit}
-        >
-          뽑을 때 까지 모집 하기
-        </button>
-        <button
-          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
+        <RecruitButton onClick={doRecruit} label="모집 하기" />
+        <RecruitButton onClick={repeatRecruit} label="뽑을 때 까지 모집 하기" />
+        <RecruitButton
           onClick={() => repeatTimesRecruit(200)}
-        >
-          200연 모집 하기
-        </button>
-        <button
-          className="p-2 bg-cyan-400 rounded-md font-bold text-xs"
-          onClick={resetRecruit}
-        >
-          초기화
-        </button>
+          label="200연 모집 하기"
+        />
+        <RecruitButton onClick={resetRecruit} label="초기화" />
       </div>
       <div>모집 포인트: {recruitPoint}</div>
       {cur3Point && <div>획득한 3성의 갯수: {cur3Point}</div>}
