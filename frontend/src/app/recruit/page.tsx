@@ -1,6 +1,7 @@
 "use client";
 
 import { useFetchData } from "@/lib/fetch";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface IRecruit {
@@ -67,23 +68,22 @@ const RecruitPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (normalProbs.normal.length > 0 && recruitProbs.length == 0) {
+    if (normalProbs.normal.length > 0 && recruitProbs.length === 0) {
       setRecruitProbs([normalProbs]);
     }
   }, [normalProbs]);
 
   useEffect(() => {
-    if (!pickUpCharacters || pickUpCharacters.length == 0) {
+    if (!Array.isArray(pickUpCharacters) || pickUpCharacters.length === 0) {
       return;
     }
 
     const fetchAllPickUps = async () => {
       const pickUpProbs = await Promise.all(
         pickUpCharacters.map((character) =>
-          useFetchData<IRecruitAPIResponse>(
-            `/api/v0/recruit/pickup/${character}`,
-            defaultState
-          )
+          axios
+            .get(`/api/v0/recruit/pickup/${character.name}`)
+            .then((res) => res.data)
         )
       );
 

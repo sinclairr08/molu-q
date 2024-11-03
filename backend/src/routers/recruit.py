@@ -31,13 +31,13 @@ async def get_recruit():
     return JSONResponse(content=data)
 
 
-@router.get("/pickup/{name}", response_model=RecruitResponses)
-async def get_pickup_recruit(name: str):
-    data = read_pickup_probability(name)
-    return JSONResponse(content=data)
-
-
 @router.get("/pickup/current", response_model=list[RecruitPickupResponse])
 async def get_pickup_current():
     data = read_current_pickup()
+    return JSONResponse(content=data)
+
+
+@router.get("/pickup/{name}", response_model=RecruitResponses)
+async def get_pickup_recruit(name: str):
+    data = read_pickup_probability(name)
     return JSONResponse(content=data)
