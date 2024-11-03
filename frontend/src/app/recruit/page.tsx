@@ -1,12 +1,16 @@
 "use client";
 
 import { useFetchData } from "@/lib/fetch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IRecruit {
   name: string;
   star: number;
   prob: number;
+}
+
+interface ICurrentRecruit {
+  name: string;
 }
 
 interface IRecruitAPIResponse {
@@ -49,22 +53,53 @@ const RecruitPage: React.FC = () => {
   const [curRecruitType, setCurRecruitType] = useState("");
   const [cur3Point, setCur3Point] = useState<number | null>(null);
   const [recruitPoint, setRecruitPoint] = useState(0);
-
-  const recruitTypes = ["상시", "픽업"];
-  const pickUpCharacter = "마리(아이돌)";
+  const [recruitTypes, setRecruitTypes] = useState<string[]>(["상시 모집"]);
+  const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
 
   const normalProbs = useFetchData<IRecruitAPIResponse>(
     "/api/v0/recruit",
     defaultState
   );
-  const pickUpProbs = useFetchData<IRecruitAPIResponse>(
-    `/api/v0/recruit/pickup/${pickUpCharacter}`,
-    defaultState
+
+  const pickUpCharacters = useFetchData<ICurrentRecruit[]>(
+    `/api/v0/recruit/pickup/current`,
+    []
   );
 
-  const updateRecruitType = (recruitType: string) => {
-    setCurRecruitType(recruitType);
-    setCardProbs(recruitType === "픽업" ? pickUpProbs : normalProbs);
+  useEffect(() => {
+    if (normalProbs.normal.length > 0 && recruitProbs.length == 0) {
+      setRecruitProbs([normalProbs]);
+    }
+  }, [normalProbs]);
+
+  useEffect(() => {
+    if (!pickUpCharacters || pickUpCharacters.length == 0) {
+      return;
+    }
+
+    const fetchAllPickUps = async () => {
+      const pickUpProbs = await Promise.all(
+        pickUpCharacters.map((character) =>
+          useFetchData<IRecruitAPIResponse>(
+            `/api/v0/recruit/pickup/${character}`,
+            defaultState
+          )
+        )
+      );
+
+      setRecruitProbs((prev) => [...prev, ...pickUpProbs]);
+    };
+
+    fetchAllPickUps();
+    setRecruitTypes((prev) => [
+      ...prev,
+      ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
+    ]);
+  }, [pickUpCharacters]);
+
+  const updateRecruitType = (idx: number) => {
+    setCurRecruitType(recruitTypes[idx]);
+    setCardProbs(recruitProbs[idx]);
   };
 
   const doRecruit = () => {
@@ -128,15 +163,13 @@ const RecruitPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
       <div className="flex space-x-4">
-        {recruitTypes.map((recruitType) => (
+        {recruitTypes.map((recruitType, idx) => (
           <button
             key={recruitType}
             className={`border-2 border-gray-400 p-2 rounded-md h-16 text-xs ${recruitType === curRecruitType ? "bg-yellow-200" : ""}`}
-            onClick={() => updateRecruitType(recruitType)}
+            onClick={() => updateRecruitType(idx)}
           >
-            <div>
-              {recruitType === "픽업" && pickUpCharacter} {recruitType} 모집
-            </div>
+            <div>{recruitType}</div>
           </button>
         ))}
       </div>
