@@ -52,7 +52,7 @@ const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
-  const [cur3Point, setCur3Point] = useState<number | null>(null);
+  const [cur3List, setCur3List] = useState<string[]>([]);
   const [recruitPoint, setRecruitPoint] = useState(0);
   const [recruitTypes, setRecruitTypes] = useState<string[]>(["상시 모집"]);
   const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
@@ -106,7 +106,7 @@ const RecruitPage: React.FC = () => {
     if (cardProbs.normal.length === 0) {
       return;
     }
-    setCur3Point(null);
+    setCur3List([]);
     setCards(recruitFromData(cardProbs));
     setRecruitPoint((prev) => prev + 10);
   };
@@ -114,14 +114,14 @@ const RecruitPage: React.FC = () => {
   const resetRecruit = () => {
     setCards([]);
     setRecruitPoint(0);
-    setCur3Point(null);
+    setCur3List([]);
   };
 
   const repeatRecruit = () => {
     if (cardProbs.normal.length === 0) {
       return;
     }
-    setCur3Point(null);
+    setCur3List([]);
     recruitLoop(0);
   };
 
@@ -129,7 +129,7 @@ const RecruitPage: React.FC = () => {
     if (cardProbs.normal.length === 0) {
       return;
     }
-    setCur3Point(0);
+    setCur3List([]);
     recruitTimesLoop(0, totalPoint);
   };
 
@@ -152,11 +152,13 @@ const RecruitPage: React.FC = () => {
     setCards(newCards);
     setRecruitPoint(newPoint);
 
-    const count = newCards.filter((card) => card.star === 3).length;
-    setCur3Point((prev) => (prev ? prev + count : count));
+    const new3List = newCards
+      .filter((card) => card.star === 3)
+      .map((card) => card.name);
+    setCur3List((prev) => [...prev, ...new3List]);
 
     if (newPoint < totalPoint) {
-      setTimeout(() => recruitLoop(newPoint), 100);
+      setTimeout(() => recruitTimesLoop(newPoint, totalPoint), 100);
     }
   };
 
@@ -196,7 +198,16 @@ const RecruitPage: React.FC = () => {
         <RecruitButton onClick={resetRecruit} label="초기화" />
       </div>
       <div>모집 포인트: {recruitPoint}</div>
-      {cur3Point && <div>획득한 3성의 갯수: {cur3Point}</div>}
+      {cur3List.length > 0 && (
+        <>
+          <div>획득한 3성: {cur3List.length}</div>
+          {cur3List.map((c3) => (
+            <div className="text-xs" key={c3}>
+              {c3}
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };
