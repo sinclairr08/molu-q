@@ -2,7 +2,7 @@
 
 import { useFetchData } from "@/lib/fetch";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface IRecruit {
   name: string;
@@ -97,70 +97,82 @@ const RecruitPage: React.FC = () => {
     ]);
   }, [pickUpCharacters]);
 
-  const updateRecruitType = (idx: number) => {
-    setCurRecruitType(recruitTypes[idx]);
-    setCardProbs(recruitProbs[idx]);
-  };
+  const updateRecruitType = useCallback(
+    (idx: number) => {
+      setCurRecruitType(recruitTypes[idx]);
+      setCardProbs(recruitProbs[idx]);
+    },
+    [recruitProbs, recruitTypes]
+  );
 
-  const doRecruit = () => {
+  const doRecruit = useCallback(() => {
     if (cardProbs.normal.length === 0) {
       return;
     }
     setCur3List([]);
     setCards(recruitFromData(cardProbs));
     setRecruitPoint((prev) => prev + 10);
-  };
+  }, [cardProbs]);
 
-  const resetRecruit = () => {
+  const resetRecruit = useCallback(() => {
     setCards([]);
     setRecruitPoint(0);
     setCur3List([]);
-  };
+  }, []);
 
-  const repeatRecruit = () => {
+  const repeatRecruit = useCallback(() => {
     if (cardProbs.normal.length === 0) {
       return;
     }
     setCur3List([]);
     recruitLoop(0);
-  };
+  }, [cardProbs]);
 
-  const repeatTimesRecruit = (totalPoint: number) => {
-    if (cardProbs.normal.length === 0) {
-      return;
-    }
-    setCur3List([]);
-    recruitTimesLoop(0, totalPoint);
-  };
+  const repeatTimesRecruit = useCallback(
+    (totalPoint: number) => {
+      if (cardProbs.normal.length === 0) {
+        return;
+      }
+      setCur3List([]);
+      recruitTimesLoop(0, totalPoint);
+    },
+    [cardProbs]
+  );
 
-  const recruitLoop = (currentPoint: number) => {
-    const newCards = recruitFromData(cardProbs);
-    const newPoint = currentPoint + 10;
+  const recruitLoop = useCallback(
+    (currentPoint: number) => {
+      const newCards = recruitFromData(cardProbs);
+      const newPoint = currentPoint + 10;
 
-    setCards(newCards);
-    setRecruitPoint(newPoint);
+      setCards(newCards);
+      setRecruitPoint(newPoint);
 
-    if (newCards.every((card) => card.star !== 3) && newPoint < 200) {
-      setTimeout(() => recruitLoop(newPoint), 100);
-    }
-  };
+      if (newCards.every((card) => card.star !== 3) && newPoint < 200) {
+        setTimeout(() => recruitLoop(newPoint), 100);
+      }
+    },
+    [cardProbs]
+  );
 
-  const recruitTimesLoop = (currentPoint: number, totalPoint: number) => {
-    const newCards = recruitFromData(cardProbs);
-    const newPoint = currentPoint + 10;
+  const recruitTimesLoop = useCallback(
+    (currentPoint: number, totalPoint: number) => {
+      const newCards = recruitFromData(cardProbs);
+      const newPoint = currentPoint + 10;
 
-    setCards(newCards);
-    setRecruitPoint(newPoint);
+      setCards(newCards);
+      setRecruitPoint(newPoint);
 
-    const new3List = newCards
-      .filter((card) => card.star === 3)
-      .map((card) => card.name);
-    setCur3List((prev) => [...prev, ...new3List]);
+      const new3List = newCards
+        .filter((card) => card.star === 3)
+        .map((card) => card.name);
+      setCur3List((prev) => [...prev, ...new3List]);
 
-    if (newPoint < totalPoint) {
-      setTimeout(() => recruitTimesLoop(newPoint, totalPoint), 100);
-    }
-  };
+      if (newPoint < totalPoint) {
+        setTimeout(() => recruitTimesLoop(newPoint, totalPoint), 100);
+      }
+    },
+    [cardProbs]
+  );
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
