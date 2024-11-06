@@ -125,7 +125,7 @@ const RecruitPage: React.FC = () => {
       return;
     }
     setCur3List([]);
-    recruitLoop(0);
+    recruitLoop(0, 200, true);
   }, [cardProbs]);
 
   const repeatTimesRecruit = useCallback(
@@ -134,45 +134,39 @@ const RecruitPage: React.FC = () => {
         return;
       }
       setCur3List([]);
-      recruitTimesLoop(0, totalPoint);
+      recruitLoop(0, totalPoint, false);
     },
     [cardProbs]
   );
 
-  const recruitLoop = useCallback(
-    (currentPoint: number) => {
-      const newCards = recruitFromData(cardProbs);
-      const newPoint = currentPoint + 10;
+  const recruitLoop = (
+    currentPoint: number,
+    totalPoint: number,
+    star3Stop: boolean
+  ) => {
+    const newCards = recruitFromData(cardProbs);
+    const newPoint = currentPoint + 10;
 
-      setCards(newCards);
-      setRecruitPoint(newPoint);
+    setCards(newCards);
+    setRecruitPoint(newPoint);
 
-      if (newCards.every((card) => card.star !== 3) && newPoint < 200) {
-        setTimeout(() => recruitLoop(newPoint), 100);
-      }
-    },
-    [cardProbs]
-  );
-
-  const recruitTimesLoop = useCallback(
-    (currentPoint: number, totalPoint: number) => {
-      const newCards = recruitFromData(cardProbs);
-      const newPoint = currentPoint + 10;
-
-      setCards(newCards);
-      setRecruitPoint(newPoint);
-
+    if (!star3Stop) {
       const new3List = newCards
         .filter((card) => card.star === 3)
         .map((card) => card.name);
       setCur3List((prev) => [...prev, ...new3List]);
+    }
 
-      if (newPoint < totalPoint) {
-        setTimeout(() => recruitTimesLoop(newPoint, totalPoint), 100);
-      }
-    },
-    [cardProbs]
-  );
+    const hasNoStar3 = newCards.every((card) => card.star !== 3);
+    const hasRemainingPoint = newPoint < totalPoint;
+    const shouldContinue = star3Stop
+      ? hasNoStar3 && hasRemainingPoint
+      : hasRemainingPoint;
+
+    if (shouldContinue) {
+      setTimeout(() => recruitLoop(newPoint, totalPoint, star3Stop), 100);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
