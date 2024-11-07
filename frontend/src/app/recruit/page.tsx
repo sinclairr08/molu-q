@@ -48,6 +48,13 @@ const RecruitButton = ({ label, onClick }: { label: string; onClick: any }) => (
   </button>
 );
 
+const RecruitCard = ({ card }: { card: IRecruit }) => (
+  <div className={`text-center text-xs m-2 border-gray-400 p-2`}>
+    <img src={`/FX_TEX_GT_${card.star}.png`} className="w-12 h-12" />
+    <span>{card.name}</span>
+  </div>
+);
+
 const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
@@ -184,13 +191,7 @@ const RecruitPage: React.FC = () => {
 
       <div className="grid grid-cols-5">
         {cards.map((card, i) => (
-          <div
-            key={i}
-            className={`text-center text-xs m-2 border-gray-400 p-2`}
-          >
-            <img src={`/FX_TEX_GT_${card.star}.png`} className="w-12 h-12" />
-            <span>{card.name}</span>
-          </div>
+          <RecruitCard key={i} card={card} />
         ))}
       </div>
 
