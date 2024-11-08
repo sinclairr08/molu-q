@@ -86,22 +86,26 @@ const RecruitPage: React.FC = () => {
     }
 
     const fetchAllPickUps = async () => {
-      const pickUpProbs = await Promise.all(
-        pickUpCharacters.map((character) =>
-          axios
-            .get(`/api/v0/recruit/pickup/${character.name}`)
-            .then((res) => res.data)
-        )
-      );
+      try {
+        const pickUpProbs = await Promise.all(
+          pickUpCharacters.map((character) =>
+            axios
+              .get(`/api/v0/recruit/pickup/${character.name}`)
+              .then((res) => res.data)
+          )
+        );
 
-      setRecruitProbs((prev) => [...prev, ...pickUpProbs]);
+        setRecruitProbs((prev) => [...prev, ...pickUpProbs]);
+        setRecruitTypes((prev) => [
+          ...prev,
+          ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
+        ]);
+      } catch (error) {
+        console.error("Failed to fetch pickup character", error);
+      }
     };
 
     fetchAllPickUps();
-    setRecruitTypes((prev) => [
-      ...prev,
-      ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
-    ]);
   }, [pickUpCharacters]);
 
   const updateRecruitType = useCallback(
