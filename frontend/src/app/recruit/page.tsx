@@ -19,17 +19,19 @@ interface IRecruitAPIResponse {
   final: IRecruit[];
 }
 
-const recruitFromData = ({ normal, final }: IRecruitAPIResponse) => {
-  const result = [];
-  const probs: IRecruit[][] = [...Array(9).fill(normal), final];
+const recruitFromData = ({
+  normal,
+  final
+}: IRecruitAPIResponse): IRecruit[] => {
+  const result: IRecruit[] = [];
 
   for (let i = 0; i < 10; i++) {
     const curProb = Math.random();
-    let idx = 0;
-    while (curProb > probs[i][idx].prob) {
-      idx++;
-    }
-    result.push(probs[i][idx]);
+    const targetProb = i < 9 ? normal : final;
+    const targetRecruit =
+      targetProb.find((p) => p.prob >= curProb) ??
+      targetProb[targetProb.length - 1];
+    result.push(targetRecruit);
   }
   return result;
 };
