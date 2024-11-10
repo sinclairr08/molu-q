@@ -1,6 +1,5 @@
 "use client";
 
-import { useFetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
@@ -57,58 +56,59 @@ const RecruitCard = ({ card }: { card: IRecruit }) => (
   </div>
 );
 
+const useFetchRecruitData = () => {
+  const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
+  const [recruitTypes, setRecruitTypes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecruitData = async () => {
+      try {
+        const [normalProbs, pickUpCharacters] = await Promise.all([
+          axios
+            .get<IRecruitAPIResponse>("/api/v0/recruit")
+            .then((res) => res.data),
+          axios
+            .get<ICurrentRecruit[]>("/api/v0/recruit/pickup/current")
+            .then((res) => res.data)
+        ]);
+
+        const pickUpProbs: IRecruitAPIResponse[] =
+          pickUpCharacters.length > 0
+            ? await Promise.all(
+                pickUpCharacters.map((character) =>
+                  axios
+                    .get(`/api/v0/recruit/pickup/${character.name}`)
+                    .then((res) => res.data)
+                )
+              )
+            : [];
+
+        setRecruitProbs([normalProbs, ...pickUpProbs]);
+        setRecruitTypes([
+          "상시 모집",
+          ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
+        ]);
+      } catch (error) {
+        console.error("Failed to fetch pickup character", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecruitData();
+  }, []);
+
+  return { recruitProbs, recruitTypes, loading };
+};
+
 const RecruitPage: React.FC = () => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [cur3List, setCur3List] = useState<string[]>([]);
   const [recruitPoint, setRecruitPoint] = useState(0);
-  const [recruitTypes, setRecruitTypes] = useState<string[]>(["상시 모집"]);
-  const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
-
-  const normalProbs = useFetchData<IRecruitAPIResponse>(
-    "/api/v0/recruit",
-    defaultState
-  );
-
-  const pickUpCharacters = useFetchData<ICurrentRecruit[]>(
-    `/api/v0/recruit/pickup/current`,
-    []
-  );
-
-  useEffect(() => {
-    if (normalProbs.normal.length > 0 && recruitProbs.length === 0) {
-      setRecruitProbs([normalProbs]);
-    }
-  }, [normalProbs]);
-
-  useEffect(() => {
-    if (!Array.isArray(pickUpCharacters) || pickUpCharacters.length === 0) {
-      return;
-    }
-
-    const fetchAllPickUps = async () => {
-      try {
-        const pickUpProbs = await Promise.all(
-          pickUpCharacters.map((character) =>
-            axios
-              .get(`/api/v0/recruit/pickup/${character.name}`)
-              .then((res) => res.data)
-          )
-        );
-
-        setRecruitProbs((prev) => [...prev, ...pickUpProbs]);
-        setRecruitTypes((prev) => [
-          ...prev,
-          ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
-        ]);
-      } catch (error) {
-        console.error("Failed to fetch pickup character", error);
-      }
-    };
-
-    fetchAllPickUps();
-  }, [pickUpCharacters]);
+  const { recruitProbs, recruitTypes, loading } = useFetchRecruitData();
 
   const updateRecruitType = useCallback(
     (idx: number) => {
@@ -180,6 +180,10 @@ const RecruitPage: React.FC = () => {
       setTimeout(() => recruitLoop(newPoint, totalPoint, star3Stop), 100);
     }
   };
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
