@@ -133,21 +133,13 @@ const RecruitPage: React.FC = () => {
     setCur3List([]);
   }, []);
 
-  const repeatRecruit = useCallback(() => {
-    if (cardProbs.normal.length === 0) {
-      return;
-    }
-    setCur3List([]);
-    recruitLoop(0, 200, true);
-  }, [cardProbs]);
-
-  const repeatTimesRecruit = useCallback(
-    (totalPoint: number) => {
+  const repeatRecruit = useCallback(
+    (totalPoint: number = 200, stopAtStar: boolean = true) => {
       if (cardProbs.normal.length === 0) {
         return;
       }
       setCur3List([]);
-      recruitLoop(0, totalPoint, false);
+      recruitLoop(0, totalPoint, stopAtStar);
     },
     [cardProbs]
   );
@@ -155,7 +147,7 @@ const RecruitPage: React.FC = () => {
   const recruitLoop = (
     currentPoint: number,
     totalPoint: number,
-    star3Stop: boolean
+    stopAtStar: boolean
   ) => {
     const newCards = recruitFromData(cardProbs);
     const newPoint = currentPoint + 10;
@@ -163,7 +155,7 @@ const RecruitPage: React.FC = () => {
     setCards(newCards);
     setRecruitPoint(newPoint);
 
-    if (!star3Stop) {
+    if (!stopAtStar) {
       const new3List = newCards
         .filter((card) => card.star === 3)
         .map((card) => card.name);
@@ -172,12 +164,12 @@ const RecruitPage: React.FC = () => {
 
     const hasNoStar3 = newCards.every((card) => card.star !== 3);
     const hasRemainingPoint = newPoint < totalPoint;
-    const shouldContinue = star3Stop
+    const shouldContinue = stopAtStar
       ? hasNoStar3 && hasRemainingPoint
       : hasRemainingPoint;
 
     if (shouldContinue) {
-      setTimeout(() => recruitLoop(newPoint, totalPoint, star3Stop), 100);
+      setTimeout(() => recruitLoop(newPoint, totalPoint, stopAtStar), 100);
     }
   };
 
@@ -207,9 +199,12 @@ const RecruitPage: React.FC = () => {
 
       <div className="flex justify-center space-x-4">
         <RecruitButton onClick={doRecruit} label="모집 하기" />
-        <RecruitButton onClick={repeatRecruit} label="뽑을 때 까지 모집 하기" />
         <RecruitButton
-          onClick={() => repeatTimesRecruit(200)}
+          onClick={() => repeatRecruit(200, true)}
+          label="뽑을 때 까지 모집 하기"
+        />
+        <RecruitButton
+          onClick={() => repeatRecruit(200, false)}
           label="200연 모집 하기"
         />
         <RecruitButton onClick={resetRecruit} label="초기화" />
