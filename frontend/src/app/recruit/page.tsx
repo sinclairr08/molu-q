@@ -147,7 +147,7 @@ const RecruitPage: React.FC = () => {
   const recruitLoop = (
     currentPoint: number,
     totalPoint: number,
-    stopAtStar: boolean
+    stopOption: boolean
   ) => {
     const newCards = recruitFromData(cardProbs);
     const newPoint = currentPoint + 10;
@@ -155,21 +155,26 @@ const RecruitPage: React.FC = () => {
     setCards(newCards);
     setRecruitPoint(newPoint);
 
-    if (!stopAtStar) {
+    if (!stopOption) {
       const new3List = newCards
         .filter((card) => card.star === 3)
         .map((card) => card.name);
       setCur3List((prev) => [...prev, ...new3List]);
     }
 
-    const hasNoStar3 = newCards.every((card) => card.star !== 3);
-    const hasRemainingPoint = newPoint < totalPoint;
-    const shouldContinue = stopAtStar
-      ? hasNoStar3 && hasRemainingPoint
-      : hasRemainingPoint;
+    let shouldContinue = newPoint < totalPoint; // True -> contunue
+
+    if (stopOption && curRecruitType.includes("상시")) {
+      const hasNoStar3 = newCards.every((card) => card.star !== 3); // True -> continue
+      shouldContinue = shouldContinue && hasNoStar3;
+    } else if (stopOption && curRecruitType.includes("픽업")) {
+      const name = curRecruitType.replace(" 픽업 모집", ""); // 리팩토링 할만한 부분
+      const hasNoName = newCards.every((card) => card.name !== name); // True -> continue
+      shouldContinue = shouldContinue && hasNoName;
+    }
 
     if (shouldContinue) {
-      setTimeout(() => recruitLoop(newPoint, totalPoint, stopAtStar), 100);
+      setTimeout(() => recruitLoop(newPoint, totalPoint, stopOption), 100);
     }
   };
 
