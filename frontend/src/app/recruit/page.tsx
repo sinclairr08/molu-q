@@ -144,6 +144,39 @@ const RecruitPage: React.FC = () => {
     [cardProbs]
   );
 
+  const addCur3List = (cards: IRecruit[]) => {
+    const new3List = cards
+      .filter((card) => card.star === 3)
+      .map((card) => card.name);
+    setCur3List((prev) => [...prev, ...new3List]);
+  };
+
+  const shouldContinue = (
+    newPoint: number,
+    totalPoint: number,
+    stopOption: boolean,
+    newCards: IRecruit[]
+  ): boolean => {
+    if (newPoint >= totalPoint) {
+      return false;
+    }
+
+    if (!stopOption) {
+      return true;
+    }
+
+    if (curRecruitType.includes("상시")) {
+      return newCards.every((card) => card.star !== 3); // 하나도 3성이 없으면 계속 함
+    }
+
+    if (curRecruitType.includes("픽업")) {
+      const name = curRecruitType.replace(" 픽업 모집", ""); // 리팩토링 고려 중
+      return newCards.every((card) => card.name !== name); // 동일한 이름이 없으면 계속 함
+    }
+
+    return false;
+  };
+
   const recruitLoop = (
     currentPoint: number,
     totalPoint: number,
@@ -156,24 +189,10 @@ const RecruitPage: React.FC = () => {
     setRecruitPoint(newPoint);
 
     if (!stopOption) {
-      const new3List = newCards
-        .filter((card) => card.star === 3)
-        .map((card) => card.name);
-      setCur3List((prev) => [...prev, ...new3List]);
+      addCur3List(newCards);
     }
 
-    let shouldContinue = newPoint < totalPoint; // True -> contunue
-
-    if (stopOption && curRecruitType.includes("상시")) {
-      const hasNoStar3 = newCards.every((card) => card.star !== 3); // True -> continue
-      shouldContinue = shouldContinue && hasNoStar3;
-    } else if (stopOption && curRecruitType.includes("픽업")) {
-      const name = curRecruitType.replace(" 픽업 모집", ""); // 리팩토링 할만한 부분
-      const hasNoName = newCards.every((card) => card.name !== name); // True -> continue
-      shouldContinue = shouldContinue && hasNoName;
-    }
-
-    if (shouldContinue) {
+    if (shouldContinue(newPoint, totalPoint, stopOption, newCards)) {
       setTimeout(() => recruitLoop(newPoint, totalPoint, stopOption), 100);
     }
   };
