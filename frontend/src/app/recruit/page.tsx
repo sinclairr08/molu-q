@@ -107,6 +107,7 @@ const RecruitPage: React.FC = () => {
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [cur3List, setCur3List] = useState<string[]>([]);
+  const [pickUpCount, setPickUpCount] = useState<number | undefined>();
   const [recruitPoint, setRecruitPoint] = useState(0);
   const { recruitProbs, recruitTypes, loading } = useFetchRecruitData();
 
@@ -131,6 +132,7 @@ const RecruitPage: React.FC = () => {
     setCards([]);
     setRecruitPoint(0);
     setCur3List([]);
+    setPickUpCount(undefined);
   }, []);
 
   const repeatRecruit = useCallback(
@@ -149,6 +151,13 @@ const RecruitPage: React.FC = () => {
       .filter((card) => card.star === 3)
       .map((card) => card.name);
     setCur3List((prev) => [...prev, ...new3List]);
+
+    const name = curRecruitType.replace(" 픽업 모집", "");
+    const addPickupCount = cards.filter((card) => card.name === name).length;
+
+    if (addPickupCount > 0) {
+      setPickUpCount((prev) => (prev ? prev + addPickupCount : addPickupCount));
+    }
   };
 
   const shouldContinue = (
@@ -244,6 +253,7 @@ const RecruitPage: React.FC = () => {
           ))}
         </>
       )}
+      {pickUpCount && <div>픽업 카운트: {pickUpCount}</div>}
     </div>
   );
 };
