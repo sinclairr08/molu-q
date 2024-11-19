@@ -49,12 +49,20 @@ const RecruitButton = ({ label, onClick }: { label: string; onClick: any }) => (
   </button>
 );
 
-const RecruitCard = ({ card }: { card: IRecruit }) => (
-  <div className={`text-center text-xs m-2 border-gray-400 p-2`}>
-    <img src={`/FX_TEX_GT_${card.star}.png`} className="w-12 h-12" />
-    <span>{card.name}</span>
-  </div>
-);
+const RecruitCard = ({ card }: { card: IRecruit }) => {
+  const matched = card.name.match(/^(.*?)(\s*\(.*\))?$/);
+  const name = matched ? matched[1].trim() : "";
+  const cloth = matched && matched[2] ? matched[2]?.trim() : "";
+  return (
+    <div className={`text-center m-2 border-gray-400 p-2 w-16 h-20`}>
+      <img src={`/FX_TEX_GT_${card.star}.png`} className="w-12 h-12" />
+      <div className="flex flex-col overflow-hidden">
+        <span className="text-xs">{name}</span>
+        {cloth && <span className="text-[8px]">{cloth}</span>}
+      </div>
+    </div>
+  );
+};
 
 const useFetchRecruitData = () => {
   const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
