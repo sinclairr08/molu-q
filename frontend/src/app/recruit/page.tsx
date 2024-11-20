@@ -118,6 +118,7 @@ const RecruitPage: React.FC = () => {
   const [pickUpCount, setPickUpCount] = useState<number | undefined>();
   const [recruitPoint, setRecruitPoint] = useState(0);
   const { recruitProbs, recruitTypes, loading } = useFetchRecruitData();
+  const [running, setRunning] = useState<boolean>(false);
 
   const updateRecruitType = useCallback(
     (idx: number) => {
@@ -199,6 +200,8 @@ const RecruitPage: React.FC = () => {
     totalPoint: number,
     stopOption: boolean
   ) => {
+    setRunning(true);
+
     const newCards = recruitFromData(cardProbs);
     const newPoint = currentPoint + 10;
 
@@ -211,6 +214,8 @@ const RecruitPage: React.FC = () => {
 
     if (shouldContinue(newPoint, totalPoint, stopOption, newCards)) {
       setTimeout(() => recruitLoop(newPoint, totalPoint, stopOption), 100);
+    } else {
+      setRunning(false);
     }
   };
 
@@ -238,18 +243,20 @@ const RecruitPage: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex justify-center space-x-4">
-        <RecruitButton onClick={doRecruit} label="모집 하기" />
-        <RecruitButton
-          onClick={() => repeatRecruit(200, true)}
-          label="뽑을 때 까지 모집 하기"
-        />
-        <RecruitButton
-          onClick={() => repeatRecruit(200, false)}
-          label="200연 모집 하기"
-        />
-        <RecruitButton onClick={resetRecruit} label="초기화" />
-      </div>
+      {!running && (
+        <div className="flex justify-center space-x-4">
+          <RecruitButton onClick={doRecruit} label="모집 하기" />
+          <RecruitButton
+            onClick={() => repeatRecruit(200, true)}
+            label="뽑을 때 까지 모집 하기"
+          />
+          <RecruitButton
+            onClick={() => repeatRecruit(200, false)}
+            label="200연 모집 하기"
+          />
+          <RecruitButton onClick={resetRecruit} label="초기화" />
+        </div>
+      )}
       <div>모집 포인트: {recruitPoint}</div>
       {cur3List.length > 0 && (
         <>
