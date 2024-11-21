@@ -49,6 +49,39 @@ const RecruitButton = ({ label, onClick }: { label: string; onClick: any }) => (
   </button>
 );
 
+interface RecruitTypeButtonsProps {
+  recruitTypes: string[];
+  curRecruitType: string;
+  updateFn: (idx: number) => void;
+}
+
+const RecruitTypeButtons = ({
+  recruitTypes,
+  curRecruitType,
+  updateFn
+}: RecruitTypeButtonsProps) => {
+  return (
+    <div className="flex space-x-4">
+      {recruitTypes.map((recruitType, idx) => (
+        <button
+          key={recruitType}
+          className={`border-2 border-gray-400 p-2 rounded-md w-20 h-16 text-xs ${recruitType === curRecruitType ? "bg-yellow-200" : ""}`}
+          onClick={() => updateFn(idx)}
+        >
+          {recruitType === "" ? (
+            <span>상시 모집</span>
+          ) : (
+            <div className="flex flex-col">
+              <span>픽업 모집</span>
+              <span className="text-[10px] font-bold">{recruitType}</span>
+            </div>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const RecruitCard = ({ card }: { card: IRecruit }) => {
   const matched = card.name.match(/^(.*?)(\s*\(.*\))?$/);
   const name = matched ? matched[1].trim() : "";
@@ -93,10 +126,7 @@ const useFetchRecruitData = () => {
             : [];
 
         setRecruitProbs([normalProbs, ...pickUpProbs]);
-        setRecruitTypes([
-          "상시 모집",
-          ...pickUpCharacters.map((x) => `${x.name} 픽업 모집`)
-        ]);
+        setRecruitTypes(["", ...pickUpCharacters.map((x) => `${x.name}`)]);
       } catch (error) {
         console.error("Failed to fetch pickup character", error);
       } finally {
@@ -161,7 +191,7 @@ const RecruitPage: React.FC = () => {
       .map((card) => card.name);
     setCur3List((prev) => [...prev, ...new3List]);
 
-    const name = curRecruitType.replace(" 픽업 모집", "");
+    const name = curRecruitType;
     const addPickupCount = cards.filter((card) => card.name === name).length;
 
     if (addPickupCount > 0) {
@@ -183,16 +213,14 @@ const RecruitPage: React.FC = () => {
       return true;
     }
 
-    if (curRecruitType.includes("상시")) {
+    // 상시 모집의 경우
+    if (curRecruitType === "") {
       return newCards.every((card) => card.star !== 3); // 하나도 3성이 없으면 계속 함
     }
 
-    if (curRecruitType.includes("픽업")) {
-      const name = curRecruitType.replace(" 픽업 모집", ""); // 리팩토링 고려 중
-      return newCards.every((card) => card.name !== name); // 동일한 이름이 없으면 계속 함
-    }
-
-    return false;
+    // 픽업 모집의 경우
+    const name = curRecruitType; // 리팩토링 고려 중
+    return newCards.every((card) => card.name !== name); // 동일한 이름이 없으면 계속 함
   };
 
   const recruitLoop = (
@@ -225,17 +253,11 @@ const RecruitPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-16">
-      <div className="flex space-x-4">
-        {recruitTypes.map((recruitType, idx) => (
-          <button
-            key={recruitType}
-            className={`border-2 border-gray-400 p-2 rounded-md h-16 text-xs ${recruitType === curRecruitType ? "bg-yellow-200" : ""}`}
-            onClick={() => updateRecruitType(idx)}
-          >
-            <div>{recruitType}</div>
-          </button>
-        ))}
-      </div>
+      <RecruitTypeButtons
+        recruitTypes={recruitTypes}
+        curRecruitType={curRecruitType}
+        updateFn={updateRecruitType}
+      />
 
       <div className="grid grid-cols-5">
         {cards.map((card, i) => (
