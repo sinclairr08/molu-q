@@ -213,14 +213,19 @@ const RecruitPage: React.FC = () => {
       return true;
     }
 
-    // 상시 모집의 경우
     if (curRecruitType === "") {
-      return newCards.every((card) => card.star !== 3); // 하나도 3성이 없으면 계속 함
+      return shouldContinueNoraml(newCards);
     }
 
-    // 픽업 모집의 경우
-    const name = curRecruitType; // 리팩토링 고려 중
-    return newCards.every((card) => card.name !== name); // 동일한 이름이 없으면 계속 함
+    return shouldContinuePickup(newCards, curRecruitType);
+  };
+
+  const shouldContinueNoraml = (cards: IRecruit[]): boolean => {
+    return cards.every((card) => card.star !== 3); // 하나도 3성이 없으면 계속 함
+  };
+
+  const shouldContinuePickup = (cards: IRecruit[], name: string): boolean => {
+    return cards.every((card) => card.name !== name); // 동일한 이름이 없으면 계속 함
   };
 
   const recruitLoop = (
