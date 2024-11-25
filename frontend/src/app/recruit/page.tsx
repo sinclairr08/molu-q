@@ -47,7 +47,7 @@ const defaultState: IRecruitAPIResponse = {
   final: []
 };
 
-const useFetchRecruitData = () => {
+const useRecruitData = () => {
   const [recruitProbs, setRecruitProbs] = useState<IRecruitAPIResponse[]>([]);
   const [recruitTypes, setRecruitTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,14 +90,16 @@ const useFetchRecruitData = () => {
   return { recruitProbs, recruitTypes, loading };
 };
 
-const RecruitPage: React.FC = () => {
+const useRecruitActions = (
+  recruitProbs: IRecruitAPIResponse[],
+  recruitTypes: string[]
+) => {
   const [cardProbs, setCardProbs] = useState<IRecruitAPIResponse>(defaultState);
   const [cards, setCards] = useState<IRecruit[]>([]);
   const [curRecruitType, setCurRecruitType] = useState("");
   const [cur3List, setCur3List] = useState<string[]>([]);
   const [pickUpCount, setPickUpCount] = useState<number | undefined>();
   const [recruitPoint, setRecruitPoint] = useState(0);
-  const { recruitProbs, recruitTypes, loading } = useFetchRecruitData();
   const [running, setRunning] = useState<boolean>(false);
 
   const updateRecruitType = useCallback(
@@ -201,6 +203,35 @@ const RecruitPage: React.FC = () => {
       setRunning(false);
     }
   };
+
+  return {
+    curRecruitType,
+    updateRecruitType,
+    cards,
+    running,
+    doRecruit,
+    repeatRecruit,
+    resetRecruit,
+    recruitPoint,
+    cur3List,
+    pickUpCount
+  };
+};
+
+const RecruitPage: React.FC = () => {
+  const { recruitProbs, recruitTypes, loading } = useRecruitData();
+  const {
+    curRecruitType,
+    updateRecruitType,
+    cards,
+    running,
+    doRecruit,
+    repeatRecruit,
+    resetRecruit,
+    recruitPoint,
+    cur3List,
+    pickUpCount
+  } = useRecruitActions(recruitProbs, recruitTypes);
 
   //FIXME #29
   if (loading) {
