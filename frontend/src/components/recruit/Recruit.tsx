@@ -68,3 +68,63 @@ export const RecruitCard = ({ card }: { card: IRecruit }) => {
     </div>
   );
 };
+
+export const RecruitCardsResult = ({ cards }: { cards: IRecruit[] }) => (
+  <div className="grid grid-cols-5">
+    {cards.map((card, i) => (
+      <RecruitCard key={i} card={card} />
+    ))}
+  </div>
+);
+
+export const RecruitStartButtons = ({
+  running,
+  doRecruit,
+  repeatRecruit,
+  resetRecruit
+}: {
+  running: boolean;
+  doRecruit: () => void;
+  repeatRecruit: (totalPoint: number, stopAtStar: boolean) => void;
+  resetRecruit: () => void;
+}) => {
+  if (running) return null;
+  return (
+    <div className="flex justify-center space-x-4">
+      <RecruitStartButton onClick={doRecruit} label="모집 하기" />
+      <RecruitStartButton
+        onClick={() => repeatRecruit(200, true)}
+        label="뽑을 때 까지 모집 하기"
+      />
+      <RecruitStartButton
+        onClick={() => repeatRecruit(200, false)}
+        label="200연 모집 하기"
+      />
+      <RecruitStartButton onClick={resetRecruit} label="초기화" />
+    </div>
+  );
+};
+
+export const RecruitPickUpCount = ({
+  count
+}: {
+  count: number | undefined;
+}) => {
+  if (!count) return null;
+
+  return <div>픽업 카운트: {count}</div>;
+};
+
+export const RecruitCur3List = ({ cur3List }: { cur3List: string[] }) => {
+  if (cur3List.length === 0) return null;
+  return (
+    <>
+      <div>획득한 3성: {cur3List.length}</div>
+      {cur3List.map((c3) => (
+        <div className="text-xs" key={c3}>
+          {c3}
+        </div>
+      ))}
+    </>
+  );
+};

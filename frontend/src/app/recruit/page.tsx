@@ -1,8 +1,10 @@
 "use client";
 
 import {
-  RecruitCard,
-  RecruitStartButton,
+  RecruitCardsResult,
+  RecruitCur3List,
+  RecruitPickUpCount,
+  RecruitStartButtons,
   RecruitTypeButtons
 } from "@/components/recruit/Recruit";
 import axios from "axios";
@@ -200,6 +202,7 @@ const RecruitPage: React.FC = () => {
     }
   };
 
+  //FIXME #29
   if (loading) {
     return <div>Loading</div>;
   }
@@ -212,38 +215,19 @@ const RecruitPage: React.FC = () => {
         updateFn={updateRecruitType}
       />
 
-      <div className="grid grid-cols-5">
-        {cards.map((card, i) => (
-          <RecruitCard key={i} card={card} />
-        ))}
-      </div>
+      <RecruitCardsResult cards={cards} />
 
-      {!running && (
-        <div className="flex justify-center space-x-4">
-          <RecruitStartButton onClick={doRecruit} label="모집 하기" />
-          <RecruitStartButton
-            onClick={() => repeatRecruit(200, true)}
-            label="뽑을 때 까지 모집 하기"
-          />
-          <RecruitStartButton
-            onClick={() => repeatRecruit(200, false)}
-            label="200연 모집 하기"
-          />
-          <RecruitStartButton onClick={resetRecruit} label="초기화" />
-        </div>
-      )}
+      <RecruitStartButtons
+        running={running}
+        doRecruit={doRecruit}
+        repeatRecruit={repeatRecruit}
+        resetRecruit={resetRecruit}
+      />
+
       <div>모집 포인트: {recruitPoint}</div>
-      {cur3List.length > 0 && (
-        <>
-          <div>획득한 3성: {cur3List.length}</div>
-          {cur3List.map((c3) => (
-            <div className="text-xs" key={c3}>
-              {c3}
-            </div>
-          ))}
-        </>
-      )}
-      {pickUpCount && <div>픽업 카운트: {pickUpCount}</div>}
+      <RecruitCur3List cur3List={cur3List} />
+
+      <RecruitPickUpCount count={pickUpCount} />
     </div>
   );
 };
