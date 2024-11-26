@@ -14,6 +14,7 @@ class RecruitResponse(BaseModel):
     name: str
     star: int
     prob: float
+    isLimited: bool
 
 
 class RecruitResponses(BaseModel):
