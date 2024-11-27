@@ -6,14 +6,26 @@ client = MongoClient("mongodb://localhost:27017")
 db = client["molu-q"]
 
 
+query_1 = {"isLimited": False, "name": {"$ne": "abc"}}  # name이 "abc"가 아닌 문서
+
+query = {
+    "star": 3,  # star가 3
+    "$or": [{"isLimited": False}, {"name": "abc"}],  # isLimited가 False  # name이 "abc"
+}
+
+
 def get_students(star, name=None):
     collection = db["students"]
     if star == 3 and name:
-        return list(collection.find({"star": 3, "name": {"$ne": name}}, {"_id": 0}))
+        return list(
+            collection.find(
+                {"star": 3, "isLimited": False, "name": {"$ne": name}}, {"_id": 0}
+            )
+        )
     elif star == 4 and name:
         return list(collection.find({"name": name}, {"_id": 0}))
     else:
-        return list(collection.find({"star": star}, {"_id": 0}))
+        return list(collection.find({"star": star, "isLimited": False}, {"_id": 0}))
 
 
 def get_probability(star_probs, name=None):
