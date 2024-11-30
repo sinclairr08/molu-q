@@ -104,6 +104,7 @@ const useRecruitActions = (
 
   const updateRecruitType = useCallback(
     (idx: number) => {
+      resetRecruit();
       setCurRecruitType(recruitTypes[idx]);
       setCardProbs(recruitProbs[idx]);
     },
@@ -232,8 +233,6 @@ const RecruitPage: React.FC = () => {
     cur3List,
     pickUpCount
   } = useRecruitActions(recruitProbs, recruitTypes);
-
-  console.log(cur3List);
 
   //FIXME #29
   if (loading) {
