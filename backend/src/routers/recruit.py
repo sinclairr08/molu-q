@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from src.repository.recruit import (
+from src.service.recruitService import (
     read_current_pickup,
     read_pickup_probability,
     read_recruit_probability,
