@@ -120,8 +120,8 @@ export const RecruitCur3List = ({ cur3List }: { cur3List: string[] }) => {
   return (
     <>
       <div>획득한 3성: {cur3List.length}</div>
-      {cur3List.map((c3) => (
-        <div className="text-xs" key={c3}>
+      {cur3List.map((c3, i) => (
+        <div className="text-xs" key={`cur3_${i}`}>
           {c3}
         </div>
       ))}

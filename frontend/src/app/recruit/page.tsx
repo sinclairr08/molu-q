@@ -131,7 +131,7 @@ const useRecruitActions = (
       if (cardProbs.normal.length === 0) {
         return;
       }
-      setCur3List([]);
+      resetRecruit();
       recruitLoop(0, totalPoint, stopAtStar);
     },
     [cardProbs]
@@ -232,6 +232,8 @@ const RecruitPage: React.FC = () => {
     cur3List,
     pickUpCount
   } = useRecruitActions(recruitProbs, recruitTypes);
+
+  console.log(cur3List);
 
   //FIXME #29
   if (loading) {
