@@ -1,18 +1,14 @@
 "use client";
 
 import { useQuiz } from "@/contexts/QuizContext";
-import axios from "axios";
+import { useFetchData } from "@/lib/fetch";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import useSWR from "swr";
 
 interface IQuizAnswer {
   answer: string;
 }
-
-const fetcher = (url: string) =>
-  axios.get<IQuizAnswer>(url).then((res) => res.data);
 
 const QuizProblemPage: React.FC = () => {
   const [message, setMessage] = useState<string>("");
@@ -23,23 +19,22 @@ const QuizProblemPage: React.FC = () => {
 
   const problemId = parseInt(segments[segments.length - 2]);
   const quizSetId = parseInt(segments[segments.length - 3]);
-
-  const { data } = useSWR<IQuizAnswer>(
+  const answerData = useFetchData<IQuizAnswer>(
     `/api/v0/quiz/sets/${quizSetId}/answer/${problemId}`,
-    fetcher,
+    { answer: "" }
   );
 
   useEffect(() => {
-    if (data && data.answer && problemId) {
-      if (data.answer == getAnswer(problemId).answer) {
-        setMessage(`정답! ${data.answer}`);
+    if (answerData && answerData.answer && problemId) {
+      if (answerData.answer == getAnswer(problemId).answer) {
+        setMessage(`정답! ${answerData.answer}`);
         submitResult({ quizSetId, problemId, status: true });
       } else {
-        setMessage(`오답! ${data.answer}`);
+        setMessage(`오답! ${answerData.answer}`);
         submitResult({ quizSetId, problemId, status: false });
       }
     }
-  }, [data, problemId]);
+  }, [answerData, problemId]);
 
   return (
     <div className="flex flex-col justify-center items-center text-cyan-400 font-bold">

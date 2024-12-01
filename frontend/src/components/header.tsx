@@ -12,6 +12,9 @@ const Header: React.FC = () => {
       <Link href="/http">
         <span className="mx-4">HTTP</span>
       </Link>
+      <Link href="/recruit">
+        <span className="mx-4">모집</span>
+      </Link>
     </div>
   );
 };

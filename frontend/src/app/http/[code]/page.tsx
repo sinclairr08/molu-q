@@ -2,13 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { IHttp } from "../page";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import Link from "next/link";
-import useSWR from "swr";
 import { Image } from "@/components/general/image";
-
-const fetcher = (url: string) => axios.get<IHttp>(url).then((res) => res.data);
+import { useFetchData } from "@/lib/fetch";
 
 const HttpDetailCard = (cardProps: IHttp) => {
   return (
@@ -31,19 +27,16 @@ const HttpDetailCard = (cardProps: IHttp) => {
 };
 
 const CodePage: React.FC = () => {
-  const [httpDetailItem, setHttpDetaiItem] = useState<IHttp>();
   const pathname = usePathname();
 
   const lastPath = pathname.split("/").filter(Boolean).pop() || "";
   const code = parseInt(lastPath);
 
-  const { data } = useSWR<IHttp>(`/api/v0/http/${code}`, fetcher);
-
-  useEffect(() => {
-    if (data) {
-      setHttpDetaiItem(data);
-    }
-  }, [data]);
+  const httpDetailItem = useFetchData<IHttp>(`/api/v0/http/${code}`, {
+    code: 0,
+    message: "",
+    imagePath: ""
+  });
 
   return (
     <>
