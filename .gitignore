@@ -47,3 +47,6 @@ __pycache__/
 # temporary image files
 backend/images
 backend/audios
+
+# Intellij
+.idea/
